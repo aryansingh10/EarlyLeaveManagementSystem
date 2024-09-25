@@ -17,6 +17,8 @@ exports.register = async (req, res) => {
 };
 
 
+// authController.js
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -27,8 +29,22 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    res.json({ user, token }); 
   } catch (err) {
+    console.error('Login Error:', err);  
     res.status(400).json({ message: 'Login failed' });
+  }
+};
+
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error' });
   }
 };
