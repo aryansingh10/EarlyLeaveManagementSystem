@@ -6,27 +6,17 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student'); // Default role is 'student'
-  const { signup } = useAuth(); // Hook to access signup function
+  const [role, setRole] = useState('student');
+  const { signup } = useAuth(); 
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Pass the correct parameters for signup (name, email, password, role)
+      
       await signup(name, email, password, role);
-      // extract role from the response and navigate to the respective dashboard// Navigate to the respective dashboard based on the role
-      if (role === 'student') {
-        console.log('Navigating to student-dashboard');
-        navigate('/student-dashboard');
-      } else if (role === 'coordinator') {
-        console.log('Navigating to coordinator-dashboard');
-        navigate('/coordinator-dashboard');
-      } else if (role === 'hod') {
-        console.log('Navigating to hod-dashboard');
-        navigate('/hod-dashboard');
-      }
+      navigate(`/${role}-dashboard`);
       
     } catch (error) {
       console.error('Signup error: ', error);

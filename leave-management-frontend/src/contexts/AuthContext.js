@@ -2,83 +2,73 @@ import React, { createContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
-// Create Auth Context
 const AuthContext = createContext();
 
-// Auth Provider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // New loading state
   const navigate = useNavigate();
 
-  // Check if user is already logged in on component mount
+
   useEffect(() => {
-    const storedUser = authService.getCurrentUser();
-    console.log('Stored user:', storedUser);  // Debugging stored user
+    const storedUser = localStorage.getItem('user');
     
-    if (storedUser.user) {
-      setUser(storedUser.user);
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser)); 
+      } catch (error) {
+        console.error('Error parsing stored user data:', error);
+    
+        localStorage.removeItem('user');
+      }
     }
     setLoading(false);
   }, []);
-  
-  // AuthContext.js
 
-const login = async (email, password) => {
-  try {
-    const loggedInUser = await authService.login(email, password);
-    console.log('Login response:', loggedInUser);  // Debugging response
-    setUser(loggedInUser);  // Set the user state
+  const login = async (email, password) => {
+    try {
+      const loggedInUser = await authService.login(email, password);
+      setUser(loggedInUser);
 
-    if (loggedInUser.user.role === 'student') {
-      console.log('Navigating to student-dashboard');
-      navigate('/student-dashboard');
-    } else if (loggedInUser.user.role === 'coordinator') {
-      console.log('Navigating to coordinator-dashboard');
-      navigate('/coordinator-dashboard');
-    } else if (loggedInUser.user.role === 'hod') {
-      console.log('Navigating to hod-dashboard');
-      navigate('/hod-dashboard');
+      localStorage.setItem('user', JSON.stringify(loggedInUser));
+
+      navigate(`/${loggedInUser.user.role}-dashboard`);
+    } catch (error) {
+      console.error('Login error:', error);
     }
-  } catch (error) {
-    console.error('Login error:', error);  // Log any errors
-  }
-};
-
-const signup = async (name, email, password, role) => {
-  try {
-    const signedUpUser = await authService.signup(name, email, password, role);
-    console.log('Signup response:', signedUpUser);  // Debugging response
-    setUser(signedUpUser);  // Set the user state
-
-    // Ensure navigation happens after signup
-    if (signedUpUser.role === 'student') {
-      console.log('Navigating to student-dashboard');
-      navigate('/student-dashboard');
-    } else if (signedUpUser.role === 'coordinator') {
-      console.log('Navigating to coordinator-dashboard');
-      navigate('/coordinator-dashboard');
-    } else if (signedUpUser.role === 'hod') {
-      console.log('Navigating to hod-dashboard');
-      navigate('/hod-dashboard');
-    }
-  } catch (error) {
-    console.error('Signup error:', error);  // Log any errors
-  }
-};
-
-  // Logout function
-  const logout = () => {
-    authService.logout();
-    setUser(null);
-    navigate('/login');
   };
 
-  
+  const signup = async (name, email, password, role) => {
+    try {
+      const signedUpUser = await authService.signup(name, email, password, role);
+      setUser(signedUpUser);
+
+    
+      localStorage.setItem('user', JSON.stringify(signedUpUser));
+
+      navigate(`/${signedUpUser.user.role}-dashboard`);
+    } catch (error) {
+      console.error('Signup error:', error);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await authService.logout(); 
+      setUser(null);
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
-      {!loading && children} {/* Wait until loading is done */}
+    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+      {!loading ? children : <p>Loading...</p>} 
     </AuthContext.Provider>
   );
 };
