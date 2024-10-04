@@ -10,19 +10,27 @@ import HODDashboard from './pages/LeaveManagement/HODDashboard';
 import StudentProfile from './pages/StudentProfile';
 import CoordinatorProfile from './pages/CoordinatorProfile';
 import HODProfile from './pages/HODProfile';
-import Navbar from './components/Navbar'; // Import the Navbar component
+import Navbar from './components/Navbar'; 
+import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
+
+// Simple Error Page for 404
+const NotFound = () => <h1>404 - Page Not Found</h1>;
+
+// Home and About pages can be added separately if needed
+const Home = () => <h1>Welcome to the Leave Management System</h1>;
+const About = () => <h1>About the System</h1>;
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
-        {/* Navbar is always visible */}
         <Navbar />
         <Routes>
           {/* Public routes */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/about" element={<About />} />
 
           {/* Private routes with role-based access control */}
           <Route
@@ -76,8 +84,22 @@ const App = () => {
             }
           />
 
+            {/* Submit Leave Route for students */}
+            <Route
+            path="/submit-leave"
+            element={
+              <PrivateRoute allowedRoles={['student']}>
+                <SubmitLeave />
+              </PrivateRoute>
+            }
+          />
+
+
           {/* Fallback route for unauthorized access */}
           <Route path="/unauthorized" element={<h2>Unauthorized Access</h2>} />
+
+          {/* Fallback route for undefined routes */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </Router>

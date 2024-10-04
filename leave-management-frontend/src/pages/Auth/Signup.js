@@ -19,6 +19,7 @@ const Signup = () => {
       navigate(`/${role}-dashboard`);
       
     } catch (error) {
+          navigate('/signup');
       console.error('Signup error: ', error);
       setError('Signup failed. Please try again.');
     }

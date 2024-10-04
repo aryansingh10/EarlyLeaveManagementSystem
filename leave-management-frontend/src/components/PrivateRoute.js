@@ -6,9 +6,9 @@ import { useAuth } from '../contexts/AuthContext';
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
 
-  // Check if user is authenticated and has an allowed role
+  
   if (!user || (allowedRoles && !allowedRoles.includes(user.user.role))) {
-    return <Navigate to="/login" />; // Redirect to login if not authenticated or role not allowed
+    return <Navigate to="/login" />;
   }
 
 
