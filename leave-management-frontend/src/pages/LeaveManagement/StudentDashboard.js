@@ -12,6 +12,12 @@ const StudentDashboard = () => {
         <button style={{ marginTop: '20px', padding: '10px 20px' }}>
           Submit a Leave Request
         </button>
+        <Link to="/leave-history">
+        <button style={{ marginTop: '20px', padding: '10px 20px' }}>
+          View Leave History
+        </button>
+        </Link>
+  
       </Link>
     </div>
   );

@@ -32,7 +32,7 @@ const CoordinatorDashboard = () => {
         },
       });
       toast.success('Leave approved successfully');
-      setLeaves(leaves.map((leave) => leave._id === leaveId ? { ...leave, status: 'approved' } : leave));
+      setLeaves(leaves.filter((leave) => leave._id !== leaveId));
     } catch (error) {
       toast.error('Error approving leave');
     }
@@ -48,6 +48,7 @@ const CoordinatorDashboard = () => {
       });
       toast.success('Leave rejected successfully');
       setLeaves(leaves.map((leave) => leave._id === leaveId ? { ...leave, status: 'rejected' } : leave));
+  
     } catch (error) {
       toast.error('Error rejecting leave');
     }
@@ -59,7 +60,12 @@ const CoordinatorDashboard = () => {
       <ul>
         {leaves.map((leave) => (
           <li key={leave._id}>
-            {leave.reason} (from {leave.startDate} to {leave.endDate}) - Status: {leave.status}
+         <li key={leave._id}>
+  {leave.reason} (from {new Date(leave.startDate).toLocaleDateString()} to{' '}
+  {new Date(leave.endDate).toLocaleDateString()}) - Status: {leave.status}
+  {leave.isEarlyLeave && <span> (Early Leave)</span>} {/* Display if it's an early leave */}
+</li>
+
             <button onClick={() => handleApprove(leave._id)}>Approve</button>
             <button onClick={() => handleReject(leave._id)}>Reject</button>
           </li>
