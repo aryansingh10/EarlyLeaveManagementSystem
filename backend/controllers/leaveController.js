@@ -1,13 +1,14 @@
 const Leave = require('../models/Leave');
 
 exports.submitLeave = async (req, res) => {
-  const { leaveDates, reason, supportingDocuments } = req.body;
+  const { leaveDates, reason, supportingDocuments,isEarlyLeave } = req.body;
   try {
     const leave = new Leave({
       studentId: req.user.id,
       leaveDates,
       reason,
-      supportingDocuments
+      supportingDocuments,
+      isEarlyLeave
     });
     await leave.save();
     res.status(201).json(leave);

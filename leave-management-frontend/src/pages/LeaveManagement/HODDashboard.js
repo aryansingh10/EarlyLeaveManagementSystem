@@ -71,8 +71,9 @@ const HODDashboard = () => {
           {leaves.map((leave) => (
             <li key={leave._id}>
               <p>
-                {leave.reason} (from {new Date(leave.startDate).toLocaleDateString()} to{' '}
-                {new Date(leave.endDate).toLocaleDateString()}) - Status: {leave.status}
+              {leave.reason} (from {new Date(leave.startDate).toLocaleDateString()} to{' '}
+  {new Date(leave.endDate).toLocaleDateString()}) - Status: {leave.status}
+  {leave.isEarlyLeave && <span> (Early Leave)</span>} {/* Display if it's an early leave */}
               </p>
               {leave.status === 'approved' ? (
                 <>

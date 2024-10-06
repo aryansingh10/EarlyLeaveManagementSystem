@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { toast } from 'react-toastify';
+
 
 const LeaveHistory = () => {
   const [leaveHistory, setLeaveHistory] = useState([]);
@@ -9,7 +10,7 @@ const LeaveHistory = () => {
     const fetchLeaveHistory = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/leave/student/leave-history', {
+        const response = await api.get('/leave/student/leave-history', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

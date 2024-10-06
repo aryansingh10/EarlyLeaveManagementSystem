@@ -12,6 +12,7 @@ import CoordinatorProfile from './pages/CoordinatorProfile';
 import HODProfile from './pages/HODProfile';
 import Navbar from './components/Navbar'; 
 import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
+import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
 
 // Simple Error Page for 404
 const NotFound = () => <h1>404 - Page Not Found</h1>;
@@ -90,6 +91,15 @@ const App = () => {
             element={
               <PrivateRoute allowedRoles={['student']}>
                 <SubmitLeave />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/leave-history"
+            element={
+              <PrivateRoute allowedRoles={['student']}>
+                <LeaveHistory />
               </PrivateRoute>
             }
           />

@@ -6,14 +6,15 @@ const SubmitLeave = () => {
   const [reason, setReason] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [isEarlyLeave, setIsEarlyLeave] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       const response = await api.post(
-        '/leave/submit', // No need for `/api` since baseURL is already set in api instance
-        { reason, startDate, endDate },
+        '/leave/submit', 
+        { reason, startDate, endDate,isEarlyLeave},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,7 +46,7 @@ const SubmitLeave = () => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            required
+            
           />
         </div>
         <div>
@@ -54,8 +55,18 @@ const SubmitLeave = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            required
           />
+          <label>
+          <br />
+        <br />
+        <input
+          type="checkbox"
+          checked={isEarlyLeave}
+          onChange={(e) => setIsEarlyLeave(e.target.checked)}
+        />
+        <br />
+        Early Leave
+      </label>
         </div>
         <button type="submit">Submit Leave</button>
       </form>
