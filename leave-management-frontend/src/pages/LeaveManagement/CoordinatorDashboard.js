@@ -15,6 +15,8 @@ const CoordinatorDashboard = () => {
           },
         });
         setLeaves(response.data);
+        console.log(response.data);
+        
       } catch (error) {
         toast.error('Error fetching leave requests');
       }
@@ -47,29 +49,47 @@ const CoordinatorDashboard = () => {
         },
       });
       toast.success('Leave rejected successfully');
-      setLeaves(leaves.map((leave) => leave._id === leaveId ? { ...leave, status: 'rejected' } : leave));
-  
+      setLeaves(leaves.filter((leave) => leave._id !== leaveId));
     } catch (error) {
       toast.error('Error rejecting leave');
     }
   };
 
   return (
-    <div>
-      <h1>Coordinator Leave Approvals</h1>
-      <ul>
-        {leaves.map((leave) => (
-          <li key={leave._id}>
-         <li key={leave._id}>
-  {leave.reason} (from {new Date(leave.startDate).toLocaleDateString()} to{' '}
-  {new Date(leave.endDate).toLocaleDateString()}) - Status: {leave.status}
-  {leave.isEarlyLeave && <span> (Early Leave)</span>} {/* Display if it's an early leave */}
-</li>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-center mb-6">Coordinator Leave Approvals</h1>
+      <ul className="space-y-4">
+      {leaves.map((leave) => (
+  <li key={leave._id} className="bg-white p-4 rounded-lg shadow-md">
+    <p className="font-semibold">Name: {leave.studentId.name}</p>
+    <p className="font-semibold">
+      {leave.reason} (from {leave.startDate ? new Date(leave.startDate).toLocaleDateString() : 'N/A'} to{' '}
+      {leave.endDate ? new Date(leave.endDate).toLocaleDateString() : 'N/A'}) - Status: 
+      <span className={`font-bold ${leave.status === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
+        {leave.status}
+      </span>
+      {leave.isEarlyLeave && <span className="text-yellow-600"> (Early Leave)</span>}
+    </p>
+    <div className="flex space-x-2 mt-4">
+      <button 
+        onClick={() => handleApprove(leave._id)} 
+        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-500 transition duration-200"
+      >
+        Approve
+      </button>
+      <button 
+        onClick={() => handleReject(leave._id)} 
+        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition duration-200"
+      >
+        Reject
+      </button>
+      if(!leave){
+        <p> No Leave Requests</p>
+      }
+    </div>
+  </li>
+))}
 
-            <button onClick={() => handleApprove(leave._id)}>Approve</button>
-            <button onClick={() => handleReject(leave._id)}>Reject</button>
-          </li>
-        ))}
       </ul>
     </div>
   );

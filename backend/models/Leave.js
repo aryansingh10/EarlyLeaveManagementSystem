@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const leaveSchema = new mongoose.Schema({
   studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  leaveDates: { type: [Date] },
+  startDate: { type: Date},
+  endDate: { type: Date},
   reason: { type: String, required: true },
   supportingDocuments: String,
   isEarlyLeave: { type: Boolean, default: false },

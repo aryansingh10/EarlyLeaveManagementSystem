@@ -13,13 +13,13 @@ import HODProfile from './pages/HODProfile';
 import Navbar from './components/Navbar'; 
 import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
 import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
+import About from './pages/About';
 
 // Simple Error Page for 404
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 // Home and About pages can be added separately if needed
 const Home = () => <h1>Welcome to the Leave Management System</h1>;
-const About = () => <h1>About the System</h1>;
 
 const App = () => {
   return (

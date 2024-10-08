@@ -35,7 +35,8 @@ export const AuthProvider = ({ children }) => {
 
       navigate(`/${loggedInUser.user.role}-dashboard`);
 
-      toast.success('Login successful');
+      toast.success(`Welcome back, ${loggedInUser.user.name}!`);
+
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Email or password is incorrect');
@@ -62,6 +63,15 @@ export const AuthProvider = ({ children }) => {
       if(error.response.status === 400){
         toast.error('Email already exists');
       }
+      
+      if(error.response.status === 500){
+        toast.error('Server error');
+      }
+
+      if(error.response.status === 401){
+        toast.error('Unauthorized');
+      }
+
       
       console.error('Signup error:', error);
     }
