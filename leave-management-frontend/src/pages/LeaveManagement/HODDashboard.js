@@ -69,10 +69,12 @@ const HODDashboard = () => {
           {leaves.map((leave) => (
             <li key={leave._id} className="bg-white p-4 rounded-lg shadow-md">
               <p className="font-semibold">
+                <p className="font-semibold uppercase"> {leave.studentId.name} ({leave.studentId.enrollmentNo}) </p>
+
                 {leave.reason} (from {new Date(leave.startDate).toLocaleDateString()} to{' '}
                 {new Date(leave.endDate).toLocaleDateString()}) - Status: 
                 <span className={`font-bold ${leave.status === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
-                  {leave.status}
+                  {leave.status} By {leave.coordinatorId.name}
                 </span>
                 {leave.isEarlyLeave && <span className="text-yellow-600"> (Early Leave)</span>}
               </p>

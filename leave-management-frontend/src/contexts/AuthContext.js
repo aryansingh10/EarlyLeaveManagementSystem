@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
       navigate(`/${signedUpUser.user.role}-dashboard`);
 
-      toast.success('Signup successful');
+      toast.success(`Welcome, ${signedUpUser.user.name}!`);
 
       
 

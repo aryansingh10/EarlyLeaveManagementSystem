@@ -10,7 +10,7 @@ exports.submitLeave = async (req, res) => {
       endDate,
       reason,
       supportingDocuments,
-      isEarlyLeave
+      isEarlyLeave,
     });
     await leave.save();
     res.status(201).json(leave);
@@ -88,7 +88,8 @@ exports.getCoordinatorLeaves = async (req, res) => {
 
 exports.getHODLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find({ $or: [{ status: 'approved' }, { status: 'pending' }] }).populate('studentId', 'name');
+    const leaves = await Leave.find({ $or: [{ status: 'approved' }, { status: 'pending' }] }).populate('studentId', 'name').populate('coordinatorId', 'name');
+
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for HOD' });

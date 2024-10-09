@@ -83,9 +83,7 @@ const CoordinatorDashboard = () => {
       >
         Reject
       </button>
-      if(!leave){
-        <p> No Leave Requests</p>
-      }
+      
     </div>
   </li>
 ))}
