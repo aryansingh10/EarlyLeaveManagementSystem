@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-import authService from '../services/authService';
+import authService from '../services/authService';  // Updated import for authService
 import { useNavigate } from 'react-router-dom';
-import{toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const AuthContext = createContext();
 
@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -19,13 +18,13 @@ export const AuthProvider = ({ children }) => {
         setUser(JSON.parse(storedUser)); 
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-    
         localStorage.removeItem('user');
       }
     }
     setLoading(false);
   }, []);
 
+ 
   const login = async (email, password) => {
     try {
       const loggedInUser = await authService.login(email, password);
@@ -36,60 +35,49 @@ export const AuthProvider = ({ children }) => {
       navigate(`/${loggedInUser.user.role}-dashboard`);
 
       toast.success(`Welcome back, ${loggedInUser.user.name}!`);
-
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Email or password is incorrect');
     }
   };
 
-  const signup = async (name, email, password, role) => {
+
+  const signup = async (name, email, password, role, enrollmentNumber = null) => {
     try {
-      const signedUpUser = await authService.signup(name, email, password, role);
+      const signedUpUser = await authService.signup(name, email, password, role, enrollmentNumber);
       setUser(signedUpUser);
 
-    
       localStorage.setItem('user', JSON.stringify(signedUpUser));
 
       navigate(`/${signedUpUser.user.role}-dashboard`);
 
       toast.success(`Welcome, ${signedUpUser.user.name}!`);
-
-      
-
-
     } catch (error) {
       navigate('/signup');
-      if(error.response.status === 400){
+      if (error.response?.status === 400) {
         toast.error('Email already exists');
-      }
-      
-      if(error.response.status === 500){
+      } else if (error.response?.status === 500) {
         toast.error('Server error');
-      }
-
-      if(error.response.status === 401){
+      } else if (error.response?.status === 401) {
         toast.error('Unauthorized');
       }
 
-      
       console.error('Signup error:', error);
     }
   };
 
   const logout = async () => {
     try {
-      await authService.logout(); 
+      await authService.logout();
       setUser(null);
 
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-    
+
       navigate('/login');
       toast.success('Logout successful');
     } catch (error) {
       toast.error('Logout failed');
-    
       console.error('Logout error:', error);
     }
   };

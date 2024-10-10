@@ -2,8 +2,24 @@ const Leave = require('../models/Leave');
 const User = require('../models/User');
 
 exports.submitLeave = async (req, res) => {
-  const { startDate,endDate, reason, supportingDocuments,isEarlyLeave } = req.body;
+  const { startDate, endDate, reason, supportingDocuments, isEarlyLeave } = req.body;
+  
   try {
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    
+    const existingLeave = await Leave.findOne({
+      studentId: req.user.id,
+      createdAt: { $gte: today } 
+    });
+
+    if (existingLeave) {
+      return res.status(400).json({ message: 'You have already applied for leave today.' });
+    }
+
+    // If no leave is found for today, proceed with applying for leave
     const leave = new Leave({
       studentId: req.user.id,
       startDate,
@@ -12,6 +28,7 @@ exports.submitLeave = async (req, res) => {
       supportingDocuments,
       isEarlyLeave,
     });
+
     await leave.save();
     res.status(201).json(leave);
   } catch (err) {
@@ -65,34 +82,26 @@ exports.getStudentLeaves = async (req, res) => {
 };
 
 
-exports.getCoordinatorLeaves = async (req, res) => {
-  try {
-    // Find leaves that are pending and populate student details
-    const leaves = await Leave.find({ status: 'pending' }).populate('studentId', 'name'); // Specify the fields you want to retrieve
-
-    console.log(leaves);
-
-    // // For debugging, if you need to see the first student's details
-    // if (leaves.length > 0) {
-    //   console.log("First student's details ->", leaves[0].studentId);
-    // }
-
-    res.status(200).json(leaves);
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: 'Failed to fetch leaves for coordinator' });
-  }
-};
-
-
-
 exports.getHODLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find({ $or: [{ status: 'approved' }, { status: 'pending' }] }).populate('studentId', 'name').populate('coordinatorId', 'name');
+    const leaves = await Leave.find({ $or: [{ status: 'approved' }, { status: 'pending' }] }).populate('studentId', 'name enrollmentNumber') // Include enrollmentNumber
+   .populate('coordinatorId', 'name');
 
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for HOD' });
+  }
+};
+
+// Coordinator: Fetch pending leaves including student enrollment number
+exports.getCoordinatorLeaves = async (req, res) => {
+  try {
+    const leaves = await Leave.find({ status: 'pending' })
+      .populate('studentId', 'name enrollmentNumber'); // Include enrollmentNumber
+
+    res.status(200).json(leaves);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to fetch leaves for coordinator' });
   }
 };
 

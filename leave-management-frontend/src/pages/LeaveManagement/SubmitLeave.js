@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
 
@@ -7,6 +7,15 @@ const SubmitLeave = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isEarlyLeave, setIsEarlyLeave] = useState(false);
+
+  // Define today's date globally for this component
+  const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
+  useEffect(() => {
+    // Set today's date in the state for input type="date"
+    setStartDate(today);
+    setEndDate(today); // Set endDate to today as well
+  }, []); // Run once on mount
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,16 +32,21 @@ const SubmitLeave = () => {
       );
       toast.success(response.data.message || 'Leave submitted successfully');
       setReason('');
-      setStartDate('');
-      setEndDate('');
+      setStartDate(today); // Reset to today's date
+      setEndDate(today); // Reset to today's date
       setIsEarlyLeave(false);
-      
     } catch (error) {
-      const message = error.response?.data?.message || 'Error submitting leave';
-      toast.error(message);
+      const message = error.response?.data?.message || 'Error submitting leave'; // Declare 'message' first
+  
+      // Display custom error if already applied for leave today
+      if (message === 'You have already applied for leave today.') {
+        toast.error('You have already applied for leave today. Please try again tomorrow.');
+      } else {
+        toast.error(message); // Use 'message' after declaration
+      }
     }
   };
-
+  
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">Submit Leave</h1>
@@ -51,8 +65,8 @@ const SubmitLeave = () => {
           <input
             type="date"
             value={startDate}
+            min={today} 
             onChange={(e) => setStartDate(e.target.value)}
-        
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -62,7 +76,6 @@ const SubmitLeave = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-          
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

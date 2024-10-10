@@ -14,12 +14,12 @@ import Navbar from './components/Navbar';
 import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
 import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
 import About from './pages/About';
+import  Home  from './pages/Home';
 
 // Simple Error Page for 404
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 // Home and About pages can be added separately if needed
-const Home = () => <h1>Welcome to the Leave Management System</h1>;
 
 const App = () => {
   return (
@@ -28,7 +28,7 @@ const App = () => {
         <Navbar />
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element= {<Home/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<About />} />

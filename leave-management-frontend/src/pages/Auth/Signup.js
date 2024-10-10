@@ -7,14 +7,22 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('student');
+  const [enrollmentNumber, setEnrollmentNumber] = useState(''); // New state for enrollment number
   const { signup } = useAuth(); 
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (role === 'student' && !enrollmentNumber) {
+      setError('Enrollment number is required for students.');
+      return;
+    }
+
     try {
-      await signup(name, email, password, role);
+      // Pass the enrollment number along with other signup details
+      await signup(name, email, password, role, enrollmentNumber);
       navigate(`/${role}-dashboard`);
     } catch (error) {
       console.error('Signup error: ', error);
@@ -72,6 +80,22 @@ const Signup = () => {
               <option value="hod">HOD</option>
             </select>
           </div>
+
+          {/* Conditionally render Enrollment Number input if the selected role is "student" */}
+          {role === 'student' && (
+            <div className="mb-4">
+              <label className="block text-gray-600 mb-2">Enrollment Number</label>
+              <input
+                type="text"
+                value={enrollmentNumber}
+                onChange={(e) => setEnrollmentNumber(e.target.value)}
+                required={role === 'student'}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your enrollment number"
+              />
+            </div>
+          )}
+
           {error && (
             <p className="text-red-500 text-sm mb-4">{error}</p>
           )}

@@ -1,30 +1,36 @@
-import api from '../utils/api';
-
+import api from '../utils/api';  // Assumes you have API setup for making requests
 
 const login = async (email, password) => {
   try {
     const response = await api.post('/auth/login', { email, password });
     console.log('Login API Response:', response.data);
     
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error('Error during login:', error);
     throw error;
   }
 };
 
-const signup = async (name, email, password, role) => {
+// Modified signup to include enrollmentNumber if role is 'student'
+const signup = async (name, email, password, role, enrollmentNumber = null) => {
   try {
-    const response = await api.post('/auth/register', { name, email, password, role });
+    const data = { name, email, password, role };
+    
+    // Include enrollmentNumber only for students
+    if (role === 'student') {
+      data.enrollmentNumber = enrollmentNumber;
+    }
+
+    const response = await api.post('/auth/register', data);
     console.log('Signup API Response:', response.data);
     
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error('Error during signup:', error);
     throw error;
   }
 };
-
 
 const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem('user'));
@@ -32,8 +38,8 @@ const getCurrentUser = () => {
 
 const logout = async () => {
   try {
-    await api.post('/auth/logout'); 
-    localStorage.removeItem('user'); 
+    await api.post('/auth/logout');
+    localStorage.removeItem('user');
   } catch (error) {
     console.error('Error during logout:', error);
   }
