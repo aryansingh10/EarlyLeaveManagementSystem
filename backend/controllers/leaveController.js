@@ -1,5 +1,10 @@
 const Leave = require('../models/Leave');
 const User = require('../models/User');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+const sendEmail = require('../utils/nodemailer');
+dotenv.config();
+
 
 exports.submitLeave = async (req, res) => {
   const { startDate, endDate, reason, supportingDocuments, isEarlyLeave } = req.body;
@@ -29,8 +34,22 @@ exports.submitLeave = async (req, res) => {
       isEarlyLeave,
     });
 
+
+
     await leave.save();
     res.status(201).json(leave);
+
+    // // Send email to HOD and Coordinator
+    // const hod = await User.findOne({ role: 'hod' });
+    // const coordinator = await User.findOne({ role: 'coordinator' });
+  
+    // if (hod && coordinator) {
+    //   const subject = 'New Leave Application';
+    //   const text = `A new leave application has been submitted by ${req.user.name}. Please login to the portal to view the application.`;
+
+    //   sendEmail(hod.email, subject, text);
+    //   sendEmail(coordinator.email, subject, text);
+    // }
   } catch (err) {
     res.status(400).json({ message: 'Leave submission failed' });
   }
@@ -147,7 +166,7 @@ exports.deleteLeave = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to delete this leave' });
     }
 
-    await leave.remove();
+    await leave.deleteOne();
     res.status(200).json({ message: 'Leave deleted successfully' });
   } catch (err) {
     res.status(400).json({ message: 'Failed to delete leave' });

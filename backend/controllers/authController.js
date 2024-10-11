@@ -2,6 +2,8 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
+const nodemailer = require('nodemailer');
+const sendEmail = require('../utils/nodemailer');
 dotenv.config();
 
 // Set cookie options
@@ -39,6 +41,13 @@ exports.register = async (req, res) => {
         enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
       },
     });
+
+    // Send welcome email
+    const subject = 'Welcome to Leave Management System';
+    const text = `Hello, ${name}! Welcome to Leave Management System. You have successfully registered as a ${role}.`;
+    sendEmail(email, subject, text);
+  
+
   } catch (err) {
     res.status(400).json({ message: 'Registration failed' });
   }

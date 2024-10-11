@@ -10,9 +10,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="text-white text-xl font-bold">Automated Leave System</div>
         <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="text-white hover:text-blue-300 transition duration-200">Home</Link>
-          </li>
+         
           {/* Show user-specific links based on authentication status */}
           {user && user.user ? (
             <>
@@ -57,6 +55,9 @@ const Navbar = () => {
             </>
           ) : (
             <>
+             <li>
+            <Link to="/" className="text-white hover:text-blue-300 transition duration-200">Home</Link>
+          </li>
               <li>
                 <Link to="/about" className="text-white hover:text-blue-300 transition duration-200">About</Link>
               </li>

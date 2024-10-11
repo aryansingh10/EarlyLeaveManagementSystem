@@ -15,17 +15,17 @@ import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
 import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
 import About from './pages/About';
 import  Home  from './pages/Home';
+// import Footer from './components/Footer';
 
-// Simple Error Page for 404
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
-// Home and About pages can be added separately if needed
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
         <Navbar />
+        
         <Routes>
           {/* Public routes */}
           <Route path="/" element= {<Home/>} />
@@ -112,6 +112,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
+    
     </Router>
   );
 };
