@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 
 const leaveSchema = new mongoose.Schema({
   studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  startDate: { type: Date},
-  endDate: { type: Date},
+  startDate: { type: Date },
+  endDate: { type: Date },
   reason: { type: String, required: true },
   supportingDocuments: String,
   isEarlyLeave: { type: Boolean, default: false },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  coordinatorApprovalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  hodApprovalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  finalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }, // Based on both approvals
   coordinatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   hodId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Leave', leaveSchema);
+const Leave = mongoose.model('Leave', leaveSchema);
+module.exports = Leave;

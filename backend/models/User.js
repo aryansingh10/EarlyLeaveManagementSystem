@@ -22,6 +22,7 @@ const UserSchema = new mongoose.Schema({
   },
   enrollmentNumber: {
     type: String,
+    unique: true,
     required: function () {
       return this.role === 'student'; // Enrollment number is required only for students
     },

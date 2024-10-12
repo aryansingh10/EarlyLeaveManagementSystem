@@ -54,8 +54,8 @@ const LeaveHistory = () => {
               <p className="font-semibold">{leave.reason}</p>
               <p className="text-gray-600">
                 From: {new Date(leave.startDate).toLocaleDateString()} To: {new Date(leave.endDate).toLocaleDateString()} - Status: 
-                <span className={`font-bold ${leave.status === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
-                  {leave.status}
+                <span className={`font-bold ${leave.finalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
+                  {leave.finalStatus}
                 </span>
               </p>
             </div>

@@ -15,8 +15,10 @@ import SubmitLeave from './pages/LeaveManagement/SubmitLeave';
 import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
 import About from './pages/About';
 import  Home  from './pages/Home';
+import ApprovedLeaves from './pages/ApprovedLeaves';
 // import Footer from './components/Footer';
-
+import './App.css'; 
+import ApprovedLeavesforHod from './pages/ApprovedLeavesforHod';
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 
@@ -100,6 +102,25 @@ const App = () => {
             element={
               <PrivateRoute allowedRoles={['student']}>
                 <LeaveHistory />
+              </PrivateRoute>
+            }
+          />
+
+<Route
+            path="/approved-leaves"
+            element={
+              <PrivateRoute allowedRoles={['student','hod','coordinator']}>
+                <ApprovedLeaves />
+              </PrivateRoute>
+            }
+          />
+
+          
+<Route
+            path="/approved-leaves-for-hod-coordinator"
+            element={
+              <PrivateRoute allowedRoles={['hod','coordinator']}>
+                <ApprovedLeavesforHod />
               </PrivateRoute>
             }
           />

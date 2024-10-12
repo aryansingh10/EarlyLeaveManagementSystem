@@ -20,6 +20,8 @@ const StudentDashboard = () => {
             View Leave History
           </button>
         </Link>
+
+     
       </div>
     </div>
   );

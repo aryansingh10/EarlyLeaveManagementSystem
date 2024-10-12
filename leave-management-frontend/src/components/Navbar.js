@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Home from '../pages/Home';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -8,7 +9,7 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-white text-xl font-bold">Automated Leave System</div>
+        <div className="text-white text-xl font-bold" > <Link to="/">Automated Leave </Link></div>
         <ul className="flex space-x-4">
          
           {/* Show user-specific links based on authentication status */}

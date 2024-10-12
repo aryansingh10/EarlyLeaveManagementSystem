@@ -42,10 +42,10 @@ exports.register = async (req, res) => {
       },
     });
 
-    // Send welcome email
-    const subject = 'Welcome to Leave Management System';
-    const text = `Hello, ${name}! Welcome to Leave Management System. You have successfully registered as a ${role}.`;
-    sendEmail(email, subject, text);
+    
+    // const subject = 'Welcome to Leave Management System';
+    // const text = `Hello, ${name}! Welcome to Leave Management System. You have successfully registered as a ${role}.`;
+    // sendEmail(email, subject, text);
   
 
   } catch (err) {

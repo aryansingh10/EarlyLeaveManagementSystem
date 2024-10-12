@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -17,8 +18,10 @@ const Signup = () => {
 
     if (role === 'student' && !enrollmentNumber) {
       setError('Enrollment number is required for students.');
+      toast.error('Enrollment number is required for students.');
       return;
     }
+
 
     try {
       // Pass the enrollment number along with other signup details
