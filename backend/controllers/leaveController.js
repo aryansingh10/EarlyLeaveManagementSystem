@@ -43,9 +43,13 @@ exports.submitLeave = async (req, res) => {
     const subject = 'New Leave Application';
     const text = `A new leave application has been submitted by ${user.name} (${user.enrollmentNumber}) for ${leave.reason}. Please login to the portal to view the application.`;
 
-    // Optionally send email to coordinator and HOD
-    // await sendEmail(coordinator.email, subject, text);
-    // await sendEmail(hod.email, subject, text);
+    // if (hod) {
+//       sendEmail(hod.email, subject, text);
+//     }
+
+    if (coordinator) {
+      sendEmail(coordinator.email, subject, text);
+    } 
 
   } catch (err) {
     console.error("Error submitting leave or sending email:", err);
@@ -53,7 +57,7 @@ exports.submitLeave = async (req, res) => {
   }
 };
 
-// Update Leave Status
+
 exports.updateLeaveStatus = async (req, res) => {
   const { leaveId, status } = req.body;
 
@@ -83,7 +87,7 @@ exports.updateLeaveStatus = async (req, res) => {
   }
 };
 
-// Get Student Leaves
+
 exports.getStudentLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ studentId: req.user.id });
@@ -93,7 +97,7 @@ exports.getStudentLeaves = async (req, res) => {
   }
 };
 
-// Get HOD Leaves
+
 exports.getHODLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ $and: [{ coordinatorApprovalStatus: 'approved' }, { finalStatus: 'pending' }] })
@@ -116,7 +120,7 @@ exports.getCoordinatorLeaves = async (req, res) => {
   }
 };
 
-// Fetch Leave By ID
+
 exports.getLeaveById = async (req, res) => {
   try {
     const leave = await Leave.findById(req.params.id);
@@ -127,7 +131,7 @@ exports.getLeaveById = async (req, res) => {
   }
 };
 
-// Get Leaves By Date Range
+
 exports.getLeavesByDate = async (req, res) => {
   const { startDate, endDate } = req.query;
   try {
@@ -141,7 +145,7 @@ exports.getLeavesByDate = async (req, res) => {
   }
 };
 
-// Get Leave History
+
 exports.getLeaveHistory = async (req, res) => {
   try {
     const leaves = await Leave.find({ studentId: req.user.id });
@@ -151,7 +155,7 @@ exports.getLeaveHistory = async (req, res) => {
   }
 };
 
-// Delete Leave
+
 exports.deleteLeave = async (req, res) => {
   try {
     const leave = await Leave.findById(req.params.id);
@@ -164,12 +168,12 @@ exports.deleteLeave = async (req, res) => {
   }
 };
 
-// Get Leave Statistics
+
 exports.getLeaveStats = async (req, res) => {
   try {
-    const totalLeaves = await Leave.countDocuments({});
-    const approvedLeaves = await Leave.countDocuments({ finalStatus: 'approved' });
-    const pendingLeaves = await Leave.countDocuments({ finalStatus: 'pending' });
+    const rejected = await Leave.find({finalStatus: 'rejected'});
+    const approvedLeaves = await Leave.find({ finalStatus: 'approved' });
+    const pendingLeaves = await Leave.find({ finalStatus: 'pending' });
 
     res.status(200).json({ totalLeaves, approvedLeaves, pendingLeaves });
   } catch (err) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Home from '../pages/Home';
 
 const Navbar = () => {
   const { user, logout } = useAuth();

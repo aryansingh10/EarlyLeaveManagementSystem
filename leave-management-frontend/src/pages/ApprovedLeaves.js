@@ -50,7 +50,7 @@ function ApprovedLeaves() {
                                     </p>
                                 </div>
                                 <div>
-                                    <span className="text-green-500 font-bold">Approved</span>
+                                    <span className="text-green-500 font-bold">{leave.finalStatus}</span>
                                 </div>
                             </div>
                         </li>

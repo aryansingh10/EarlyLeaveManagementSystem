@@ -19,6 +19,7 @@ import ApprovedLeaves from './pages/ApprovedLeaves';
 // import Footer from './components/Footer';
 import './App.css'; 
 import ApprovedLeavesforHod from './pages/ApprovedLeavesforHod';
+import GetLeaveStats from './pages/GetLeaveStats';
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 
@@ -121,6 +122,15 @@ const App = () => {
             element={
               <PrivateRoute allowedRoles={['hod','coordinator']}>
                 <ApprovedLeavesforHod />
+              </PrivateRoute>
+            }
+          />
+
+<Route
+            path="/leave-stats"
+            element={
+              <PrivateRoute allowedRoles={['hod','coordinator']}>
+                <GetLeaveStats />
               </PrivateRoute>
             }
           />
