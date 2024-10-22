@@ -7,6 +7,7 @@ const CoordinatorDashboard = () => {
   const [leaves, setLeaves] = useState([]);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
     const fetchLeaves = async () => {
       setLoading(true);
@@ -77,6 +78,9 @@ const CoordinatorDashboard = () => {
     );
   }
 
+  console.log("Leaves: ", leaves); // Check the structure of the leaves array
+  
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">Coordinator Leave Approvals</h1>
@@ -96,6 +100,12 @@ const CoordinatorDashboard = () => {
                 <p className="font-medium text-gray-800">
                   Reason: {leave.reason}
                 </p>
+              </div>
+              <div>
+                {console.log(leave.parentsNumber)}
+                <p className="font-semibold mt-2">
+                  parentsNumber: {leave.parentsNumber}
+                  </p>
               </div>
               <p className="font-semibold mt-2">
                 {leave.reason} (from {leave.startDate ? new Date(leave.startDate).toLocaleDateString() : 'N/A'} to{' '}

@@ -7,7 +7,7 @@ dotenv.config();
 
 // Submit Leave
 exports.submitLeave = async (req, res) => {
-  const { startDate, endDate, reason, supportingDocuments, isEarlyLeave } = req.body;
+  const { startDate, endDate, reason, supportingDocuments, isEarlyLeave ,parentsNumber} = req.body;
 
   try {
     const today = new Date();
@@ -28,7 +28,8 @@ exports.submitLeave = async (req, res) => {
       endDate,
       reason,
       supportingDocuments,
-      isEarlyLeave
+      isEarlyLeave,
+      parentsNumber
     });
 
     await leave.save();
@@ -47,9 +48,9 @@ exports.submitLeave = async (req, res) => {
 //       sendEmail(hod.email, subject, text);
 //     }
 
-    if (coordinator) {
-      sendEmail(coordinator.email, subject, text);
-    } 
+    // if (coordinator) {
+    //   sendEmail(coordinator.email, subject, text);
+    // } 
 
   } catch (err) {
     console.error("Error submitting leave or sending email:", err);
@@ -102,7 +103,7 @@ exports.getHODLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ $and: [{ coordinatorApprovalStatus: 'approved' }, { finalStatus: 'pending' }] })
       .populate('studentId', 'name enrollmentNumber')
-      .populate('coordinatorId', 'name');
+      .populate('coordinatorId', 'name')
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for HOD', error: err.message });
@@ -113,7 +114,7 @@ exports.getHODLeaves = async (req, res) => {
 exports.getCoordinatorLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ coordinatorApprovalStatus: 'pending' })
-      .populate('studentId', 'name enrollmentNumber');
+      .populate('studentId', 'name enrollmentNumber')
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for coordinator', error: err.message });

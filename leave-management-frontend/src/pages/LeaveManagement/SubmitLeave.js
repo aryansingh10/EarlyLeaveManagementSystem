@@ -7,6 +7,7 @@ const SubmitLeave = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isEarlyLeave, setIsEarlyLeave] = useState(false);
+  const[parentsNumber,setParentsNumber]=useState('');
 
   const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
@@ -21,7 +22,7 @@ const SubmitLeave = () => {
       const token = localStorage.getItem('token');
       const response = await api.post(
         '/leave/submit', 
-        { reason, startDate, endDate, isEarlyLeave },
+        { reason, startDate, endDate, isEarlyLeave,parentsNumber },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -33,6 +34,7 @@ const SubmitLeave = () => {
       setStartDate(today);
       setEndDate(today);
       setIsEarlyLeave(false);
+      setParentsNumber('');
     } catch (error) {
       const message = error.response?.data?.message || 'Error submitting leave';
       
@@ -82,6 +84,17 @@ const SubmitLeave = () => {
             </div>
           </>
         )}
+
+        <div className="mb-4">
+          <label className="block text-gray-600 mb-2">Parents Number:</label>
+          <input
+            type="text"
+            value={parentsNumber}
+            onChange={(e) => setParentsNumber(e.target.value)}
+            required
+            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
         <div className="mb-4 flex items-center">
           <input

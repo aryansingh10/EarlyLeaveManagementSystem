@@ -80,6 +80,11 @@ const HODDashboard = () => {
                   Reason: <span className="font-normal">{leave.reason}</span>
                 </p>
               </div>
+
+              <p className="mt-2">
+                Parents Number: <span className="font-semibold">{leave.parentsNumber}</span>
+              </p>
+              
               <p className="mt-2">
                 From {new Date(leave.startDate).toLocaleDateString()} to{' '}
                 {new Date(leave.endDate).toLocaleDateString()}

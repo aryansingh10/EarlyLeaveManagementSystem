@@ -7,6 +7,7 @@ const leaveSchema = new mongoose.Schema({
   reason: { type: String, required: true },
   supportingDocuments: String,
   isEarlyLeave: { type: Boolean, default: false },
+  parentsNumber: { type: String, required: true },
   coordinatorApprovalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   hodApprovalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   finalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }, // Based on both approvals
