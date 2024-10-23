@@ -1,18 +1,18 @@
 const Leave = require('../models/Leave');
 const User = require('../models/User');
-const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const sendEmail = require('../utils/nodemailer');
 dotenv.config();
 
 // Submit Leave
 exports.submitLeave = async (req, res) => {
-  const { startDate, endDate, reason, supportingDocuments, isEarlyLeave ,parentsNumber} = req.body;
+  const { startDate, endDate, reason, supportingDocuments, isEarlyLeave, parentsNumber, coordinatorId } = req.body;
 
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Check if a leave request has already been submitted today
     const existingLeave = await Leave.findOne({
       studentId: req.user.id,
       createdAt: { $gte: today }
@@ -22,6 +22,7 @@ exports.submitLeave = async (req, res) => {
       return res.status(400).json({ message: 'You have already applied for leave today.' });
     }
 
+    // Create new leave request
     const leave = new Leave({
       studentId: req.user.id,
       startDate,
@@ -29,28 +30,23 @@ exports.submitLeave = async (req, res) => {
       reason,
       supportingDocuments,
       isEarlyLeave,
-      parentsNumber
+      parentsNumber,
+      coordinatorId // Assign the selected coordinator
     });
 
     await leave.save();
     res.status(201).json(leave);
 
+    // Notify HOD and coordinator by email
     const hod = await User.findOne({ role: 'hod' });
-    const coordinator = await User.findOne({ role: 'coordinator' });
+    const coordinator = await User.findById(coordinatorId); // Get the selected coordinator
     const user = await User.findById(req.user.id);
-    console.log(user.name, 'has submitted a leave application');
-    console.log(leave.reason);
 
     const subject = 'New Leave Application';
     const text = `A new leave application has been submitted by ${user.name} (${user.enrollmentNumber}) for ${leave.reason}. Please login to the portal to view the application.`;
 
-    // if (hod) {
-//       sendEmail(hod.email, subject, text);
-//     }
-
-    // if (coordinator) {
-    //   sendEmail(coordinator.email, subject, text);
-    // } 
+    // if (hod) sendEmail(hod.email, subject, text);
+    // if (coordinator) sendEmail(coordinator.email, subject, text);
 
   } catch (err) {
     console.error("Error submitting leave or sending email:", err);
@@ -58,7 +54,7 @@ exports.submitLeave = async (req, res) => {
   }
 };
 
-
+// Update Leave Status
 exports.updateLeaveStatus = async (req, res) => {
   const { leaveId, status } = req.body;
 
@@ -66,10 +62,13 @@ exports.updateLeaveStatus = async (req, res) => {
     const leave = await Leave.findById(leaveId);
     if (!leave) return res.status(404).json({ message: 'Leave not found' });
 
+    // Coordinator approval
     if (req.user.role === 'coordinator' && leave.coordinatorApprovalStatus === 'pending') {
       leave.coordinatorApprovalStatus = status;
       leave.coordinatorId = req.user.id;
-    } else if (req.user.role === 'hod') {
+    } 
+    // HOD approval
+    else if (req.user.role === 'hod') {
       if (leave.coordinatorApprovalStatus === 'approved') {
         leave.hodApprovalStatus = status;
         leave.hodId = req.user.id;
@@ -88,7 +87,7 @@ exports.updateLeaveStatus = async (req, res) => {
   }
 };
 
-
+// Get leaves submitted by the student
 exports.getStudentLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ studentId: req.user.id });
@@ -98,23 +97,27 @@ exports.getStudentLeaves = async (req, res) => {
   }
 };
 
-
+// Get leaves for HOD review (approved by coordinator)
 exports.getHODLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ $and: [{ coordinatorApprovalStatus: 'approved' }, { finalStatus: 'pending' }] })
       .populate('studentId', 'name enrollmentNumber')
-      .populate('coordinatorId', 'name')
+      .populate('coordinatorId', 'name');
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for HOD', error: err.message });
   }
 };
 
-// Get Coordinator Leaves
+// Get leaves for Coordinator review
+// Get leaves for Coordinator review (only leaves assigned to the logged-in coordinator)
 exports.getCoordinatorLeaves = async (req, res) => {
   try {
-    const leaves = await Leave.find({ coordinatorApprovalStatus: 'pending' })
-      .populate('studentId', 'name enrollmentNumber')
+    const leaves = await Leave.find({
+      coordinatorApprovalStatus: 'pending',
+      coordinatorId: req.user.id  // Ensure only the selected coordinator sees the leaves
+    })
+      .populate('studentId', 'name enrollmentNumber');
     res.status(200).json(leaves);
   } catch (err) {
     res.status(400).json({ message: 'Failed to fetch leaves for coordinator', error: err.message });
@@ -122,6 +125,7 @@ exports.getCoordinatorLeaves = async (req, res) => {
 };
 
 
+// Get leave by ID
 exports.getLeaveById = async (req, res) => {
   try {
     const leave = await Leave.findById(req.params.id);
@@ -132,7 +136,7 @@ exports.getLeaveById = async (req, res) => {
   }
 };
 
-
+// Get leaves within a date range
 exports.getLeavesByDate = async (req, res) => {
   const { startDate, endDate } = req.query;
   try {
@@ -146,7 +150,7 @@ exports.getLeavesByDate = async (req, res) => {
   }
 };
 
-
+// Get student's leave history
 exports.getLeaveHistory = async (req, res) => {
   try {
     const leaves = await Leave.find({ studentId: req.user.id });
@@ -156,7 +160,7 @@ exports.getLeaveHistory = async (req, res) => {
   }
 };
 
-
+// Delete a leave request
 exports.deleteLeave = async (req, res) => {
   try {
     const leave = await Leave.findById(req.params.id);
@@ -169,12 +173,13 @@ exports.deleteLeave = async (req, res) => {
   }
 };
 
-
+// Get leave statistics (rejected, approved, pending)
 exports.getLeaveStats = async (req, res) => {
   try {
-    const rejected = await Leave.find({finalStatus: 'rejected'});
+    const rejected = await Leave.find({ finalStatus: 'rejected' });
     const approvedLeaves = await Leave.find({ finalStatus: 'approved' });
     const pendingLeaves = await Leave.find({ finalStatus: 'pending' });
+    const totalLeaves = rejected.length + approvedLeaves.length + pendingLeaves.length;
 
     res.status(200).json({ totalLeaves, approvedLeaves, pendingLeaves });
   } catch (err) {
@@ -182,7 +187,7 @@ exports.getLeaveStats = async (req, res) => {
   }
 };
 
-// Get Approved Leaves (HOD and Coordinator)
+// Get all approved leaves for HOD and Coordinator
 exports.getAllApprovedLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({ finalStatus: 'approved' })
@@ -193,3 +198,15 @@ exports.getAllApprovedLeaves = async (req, res) => {
     res.status(400).json({ message: 'Failed to fetch approved leaves', error: err.message });
   }
 };
+
+exports.fetchApprovedLeaveforaDay=async(req,res)=>{
+  const today=new Date().toISOString().split('T')[0];
+  const approvedLeaves=await Leave.find({
+    finalStatus: 'approved',
+    $or: [{ startDate: today }, { endDate: today }],
+
+  })
+  .populate('studentId', 'name enrollmentNumber');
+  res.status(200).json(approvedLeaves);
+
+}

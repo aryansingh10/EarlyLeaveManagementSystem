@@ -106,3 +106,12 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+exports.getAllCoordinators = async (req, res) => {
+  try {
+    const coordinators = await User.find({ role: 'coordinator' }).select('-password');
+    res.status(200).json(coordinators);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+}

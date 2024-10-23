@@ -7,42 +7,46 @@ const SubmitLeave = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isEarlyLeave, setIsEarlyLeave] = useState(false);
-  const[parentsNumber,setParentsNumber]=useState('');
+  const [parentsNumber, setParentsNumber] = useState('');
+  const [coordinators, setCoordinators] = useState([]);
+  const [selectedCoordinator, setSelectedCoordinator] = useState('');
 
-  const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     setStartDate(today);
     setEndDate(today);
+    fetchCoordinators();
   }, [today]);
+
+  const fetchCoordinators = async () => {
+    try {
+      const response = await api.get('/auth/coordinators');
+      setCoordinators(response.data);
+    } catch (error) {
+      toast.error('Failed to load coordinators');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
       const response = await api.post(
-        '/leave/submit', 
-        { reason, startDate, endDate, isEarlyLeave,parentsNumber },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        '/leave/submit',
+        { reason, startDate, endDate, isEarlyLeave, parentsNumber, coordinatorId: selectedCoordinator },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(response.data.message || 'Leave submitted successfully');
+      toast.success('Leave submitted successfully');
       setReason('');
       setStartDate(today);
       setEndDate(today);
       setIsEarlyLeave(false);
       setParentsNumber('');
+      setSelectedCoordinator('');
     } catch (error) {
       const message = error.response?.data?.message || 'Error submitting leave';
-      
-      if (message === 'You have already applied for leave today.') {
-        toast.error('You have already applied for leave today. Please try again tomorrow.');
-      } else {
-        toast.error(message);
-      }
+      toast.error(message);
     }
   };
 
@@ -61,7 +65,7 @@ const SubmitLeave = () => {
           />
         </div>
 
-        {!isEarlyLeave && ( // Conditionally render the date inputs based on isEarlyLeave
+        {!isEarlyLeave && (
           <>
             <div className="mb-4">
               <label className="block text-gray-600 mb-2">Start Date:</label>
@@ -94,6 +98,23 @@ const SubmitLeave = () => {
             required
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-600 mb-2">Select Coordinator:</label>
+          <select
+            value={selectedCoordinator}
+            onChange={(e) => setSelectedCoordinator(e.target.value)}
+            required
+            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Coordinator</option>
+            {coordinators.map((coordinator) => (
+              <option key={coordinator._id} value={coordinator._id}>
+                {coordinator.name} ({coordinator.email})
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-4 flex items-center">

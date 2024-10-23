@@ -11,6 +11,7 @@ const {
   getLeavesByDate,
   deleteLeave,
   getAllApprovedLeaves,
+  fetchApprovedLeaveforaDay
 } = require('../controllers/leaveController');
 
 const { auth, roleCheck } = require('../middlewares/auth');
@@ -46,6 +47,8 @@ router.get('/approved-leaves', auth, roleCheck('student', 'coordinator', 'hod'),
 
 
 router.get('/stats', auth, roleCheck('coordinator', 'hod'), getLeaveStats);
+
+router.get('/approved-leaves-for-day', auth, roleCheck('student', 'coordinator', 'hod'), fetchApprovedLeaveforaDay);
 
 
 module.exports = router;

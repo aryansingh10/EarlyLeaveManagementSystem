@@ -20,6 +20,7 @@ import ApprovedLeaves from './pages/ApprovedLeaves';
 import './App.css'; 
 import ApprovedLeavesforHod from './pages/ApprovedLeavesforHod';
 import GetLeaveStats from './pages/GetLeaveStats';
+import ApprovedLeavesToday from './pages/LeaveManagement/ApprovedLeavesToday';
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 
@@ -135,12 +136,21 @@ const App = () => {
             }
           />
 
+          <Route path='/approved-leaves-for-day' element={
+            <PrivateRoute allowedRoles={['student','hod','coordinator']}>
+              <ApprovedLeavesToday/>
+            </PrivateRoute>
+            
+          }/>
+
 
           {/* Fallback route for unauthorized access */}
           <Route path="/unauthorized" element={<h2>Unauthorized Access</h2>} />
 
           {/* Fallback route for undefined routes */}
           <Route path="*" element={<NotFound />} />
+
+
         </Routes>
       </AuthProvider>
     
