@@ -16,11 +16,12 @@ import LeaveHistory from './pages/LeaveManagement/LeaveHistory';
 import About from './pages/About';
 import  Home  from './pages/Home';
 import ApprovedLeaves from './pages/ApprovedLeaves';
-// import Footer from './components/Footer';
+import Footer from './components/Footer';
 import './App.css'; 
 import ApprovedLeavesforHod from './pages/ApprovedLeavesforHod';
 import GetLeaveStats from './pages/GetLeaveStats';
 import ApprovedLeavesToday from './pages/LeaveManagement/ApprovedLeavesToday';
+import ContactUsForm from './pages/ContactUsForm';
 const NotFound = () => <h1>404 - Page Not Found</h1>;
 
 
@@ -140,8 +141,10 @@ const App = () => {
             <PrivateRoute allowedRoles={['student','hod','coordinator']}>
               <ApprovedLeavesToday/>
             </PrivateRoute>
-            
+
           }/>
+          
+          <Route path='/contact' element={<ContactUsForm/>}/>
 
 
           {/* Fallback route for unauthorized access */}
@@ -152,6 +155,7 @@ const App = () => {
 
 
         </Routes>
+        <Footer />
       </AuthProvider>
     
     </Router>

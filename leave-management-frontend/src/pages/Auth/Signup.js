@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
 import { toast } from 'react-toastify';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); 
   const [role, setRole] = useState('student');
-  const [enrollmentNumber, setEnrollmentNumber] = useState(''); // New state for enrollment number
-  const { signup } = useAuth(); 
+  const [enrollmentNumber, setEnrollmentNumber] = useState('');
+  const { signup } = useAuth();
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,9 +24,7 @@ const Signup = () => {
       return;
     }
 
-
     try {
-      // Pass the enrollment number along with other signup details
       await signup(name, email, password, role, enrollmentNumber);
       navigate(`/${role}-dashboard`);
     } catch (error) {
@@ -62,14 +62,23 @@ const Signup = () => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-600 mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} 
+                className="absolute inset-y-0 right-2 flex items-center text-blue-500 hover:text-blue-700"
+              >
+                {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}
+              </button>
+            </div>
           </div>
           <div className="mb-6">
             <label className="block text-gray-600 mb-2">Role</label>
@@ -84,7 +93,6 @@ const Signup = () => {
             </select>
           </div>
 
-          {/* Conditionally render Enrollment Number input if the selected role is "student" */}
           {role === 'student' && (
             <div className="mb-4">
               <label className="block text-gray-600 mb-2">Enrollment Number</label>
@@ -99,16 +107,22 @@ const Signup = () => {
             </div>
           )}
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
-          <button 
-            type="submit" 
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          <button
+            type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-500 transition duration-200"
           >
             Sign Up
           </button>
         </form>
+        
+        {/* Link to login */}
+        <p className="text-center text-gray-600 mt-4">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Log In
+          </Link>
+        </p>
       </div>
     </div>
   );
