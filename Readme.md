@@ -1,7 +1,7 @@
 Certainly! Here's the entire README content in one code block so you can easily copy it directly:
 
 ```bash
-# Leave Management System
+ Leave Management System
 
 A web application for managing student leave requests with role-based access for students, coordinators, and HODs. This project enables students to submit leave requests, coordinators to review them, and HODs to approve or reject leave requests.
 
@@ -123,9 +123,4 @@ Contributions are welcome! Please follow these steps:
 5. Push to the branch (`git push origin feature-branch`).
 6. Open a pull request.
 
-## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-```
-
-You can copy everything from the "copy code" button above.
