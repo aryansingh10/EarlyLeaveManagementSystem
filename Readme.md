@@ -36,6 +36,12 @@ Install dependencies:
 npm install
 ```
 
+**Run the Frontend Server**:
+
+```bash
+npm start
+```
+
 **Backend Setup**:
 
 Navigate to the backend directory:
