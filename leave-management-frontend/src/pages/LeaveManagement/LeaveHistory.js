@@ -45,23 +45,41 @@ const LeaveHistory = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-6">Leave History</h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Leave History</h1>
       <ul className="space-y-4">
         {leaveHistory.map((leave) => (
-          <li key={leave._id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
-            <div>
-              <p className="font-semibold">{leave.reason}</p>
-              <p className="text-gray-600">
-                From: {new Date(leave.startDate).toLocaleDateString()} To: {new Date(leave.endDate).toLocaleDateString()} - Status: 
-                <span className={`font-bold ${leave.finalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
-                  {leave.finalStatus}
-                </span>
+          <li key={leave._id} className="bg-white p-6 rounded-lg shadow-md flex justify-between items-center">
+            <div className="flex-1">
+              <p className="font-bold text-lg text-gray-800 mb-2">{leave.reason}</p>
+              <p className="text-gray-600 mb-2">
+                <span className="font-semibold">From:</span> {new Date(leave.startDate).toLocaleDateString()} <span className="font-semibold">To:</span> {new Date(leave.endDate).toLocaleDateString()}
               </p>
+              
+              {/* Conditional rendering for status display */}
+              {leave.coordinatorApprovalStatus === 'rejected' ? (
+                <p className="text-red-500 font-bold">Final Status: {leave.finalStatus}</p>
+              ) : (
+                <p className="text-gray-600">
+                  Coordinator Status: <span className={`font-bold ${leave.coordinatorApprovalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
+                    {leave.coordinatorApprovalStatus}
+                  </span> 
+                  {leave.coordinatorApprovalStatus === 'approved' && (
+                    <>
+                      {' '} - HOD Status: <span className={`font-bold ${leave.hodApprovalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
+                        {leave.hodApprovalStatus}
+                      </span>
+                    </>
+                  )}
+                  {' '} - Final Status: <span className={`font-bold ${leave.finalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
+                    {leave.finalStatus}
+                  </span>
+                </p>
+              )}
             </div>
             <button 
               onClick={() => deleteLeave(leave._id)} 
-              className="ml-4 bg-red-600 text-white py-2 px-3 rounded-lg hover:bg-red-500 transition duration-200 flex items-center"
+              className="ml-4 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition duration-200 flex items-center"
             >
               <MdDelete className="mr-1" />
               Delete

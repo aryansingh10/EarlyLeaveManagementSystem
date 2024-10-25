@@ -24,10 +24,16 @@ const Signup = () => {
       return;
     }
 
+ 
     try {
       await signup(name, email, password, role, enrollmentNumber);
       navigate(`/${role}-dashboard`);
     } catch (error) {
+      if(role=='hod' && error.response?.status === 400) {
+        setError('Hod already exists');
+        toast.error('Hod already exists');
+        return;
+      }
       console.error('Signup error: ', error);
       setError('Signup failed. Please try again.');
     }

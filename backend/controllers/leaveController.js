@@ -54,7 +54,6 @@ exports.submitLeave = async (req, res) => {
   }
 };
 
-// Update Leave Status
 exports.updateLeaveStatus = async (req, res) => {
   const { leaveId, status } = req.body;
 
@@ -66,12 +65,19 @@ exports.updateLeaveStatus = async (req, res) => {
     if (req.user.role === 'coordinator' && leave.coordinatorApprovalStatus === 'pending') {
       leave.coordinatorApprovalStatus = status;
       leave.coordinatorId = req.user.id;
+
+      // If coordinator rejects, immediately set finalStatus to 'rejected'
+      if (status === 'rejected') {
+        leave.finalStatus = 'rejected';
+      }
     } 
     // HOD approval
     else if (req.user.role === 'hod') {
       if (leave.coordinatorApprovalStatus === 'approved') {
         leave.hodApprovalStatus = status;
         leave.hodId = req.user.id;
+
+        // Final approval only if both HOD and Coordinator approve
         leave.finalStatus = status === 'approved' && leave.coordinatorApprovalStatus === 'approved' ? 'approved' : 'rejected';
       } else {
         return res.status(403).json({ message: 'Coordinator approval is required first' });
@@ -109,13 +115,11 @@ exports.getHODLeaves = async (req, res) => {
   }
 };
 
-// Get leaves for Coordinator review
-// Get leaves for Coordinator review (only leaves assigned to the logged-in coordinator)
 exports.getCoordinatorLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({
       coordinatorApprovalStatus: 'pending',
-      coordinatorId: req.user.id  // Ensure only the selected coordinator sees the leaves
+      coordinatorId: req.user.id  
     })
       .populate('studentId', 'name enrollmentNumber');
     res.status(200).json(leaves);
@@ -125,7 +129,7 @@ exports.getCoordinatorLeaves = async (req, res) => {
 };
 
 
-// Get leave by ID
+
 exports.getLeaveById = async (req, res) => {
   try {
     const leave = await Leave.findById(req.params.id);
@@ -150,7 +154,7 @@ exports.getLeavesByDate = async (req, res) => {
   }
 };
 
-// Get student's leave history
+
 exports.getLeaveHistory = async (req, res) => {
   try {
     const leaves = await Leave.find({ studentId: req.user.id });

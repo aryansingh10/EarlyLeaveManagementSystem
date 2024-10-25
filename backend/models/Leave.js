@@ -7,7 +7,7 @@ const leaveSchema = new mongoose.Schema({
   reason: { type: String, required: true },
   supportingDocuments: String,
   isEarlyLeave: { type: Boolean, default: false },
-  parentsNumber: { type: String, required: true },
+  parentsNumber: { type: String, required: true , minlength: 10, maxlength: 12},
   
   // Select coordinatorId field added back
   coordinatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Coordinator assigned to this leave request

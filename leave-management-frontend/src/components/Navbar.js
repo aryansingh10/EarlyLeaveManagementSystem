@@ -10,7 +10,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="text-white text-xl font-bold" > <Link to="/">Automated Leave </Link></div>
         <ul className="flex space-x-4">
-         
+
           {/* Show user-specific links based on authentication status */}
           {user && user.user ? (
             <>
@@ -45,8 +45,8 @@ const Navbar = () => {
                 </>
               )}
               <li>
-                <button 
-                  onClick={logout} 
+                <button
+                  onClick={logout}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition duration-200"
                 >
                   Logout
@@ -55,9 +55,9 @@ const Navbar = () => {
             </>
           ) : (
             <>
-             <li>
-            <Link to="/" className="text-white hover:text-blue-300 transition duration-200">Home</Link>
-          </li>
+              <li>
+                <Link to="/" className="text-white hover:text-blue-300 transition duration-200">Home</Link>
+              </li>
               <li>
                 <Link to="/about" className="text-white hover:text-blue-300 transition duration-200">About</Link>
               </li>
@@ -65,8 +65,13 @@ const Navbar = () => {
                 <Link to="/login" className="text-white hover:text-blue-300 transition duration-200">Login</Link>
               </li>
               <li>
-                <Link to="/signup" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400 transition duration-200">Signup</Link>
+                <Link
+                  to="/signup"
+                  className="text-white hover:text-blue-300 transition duration-200">
+                  Signup
+                </Link>
               </li>
+
             </>
           )}
         </ul>

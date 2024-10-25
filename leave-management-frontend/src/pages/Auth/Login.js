@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'; // Import Link for navigat
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login ,user} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // navigate(`/${user}`);
     } catch (err) {
       console.error('Login error: ', err);
       setError('Login failed. Check your credentials.');
@@ -57,10 +57,10 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Error Message */}
+    
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {/* Login Button */}
+        
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-500 transition duration-200"
@@ -68,7 +68,7 @@ const Login = () => {
             Login
           </button>
 
-          {/* Link to Signup Page */}
+    
           <p className="text-sm text-center text-gray-600 mt-4">
             Don't have an account?{' '}
             <Link to="/signup" className="text-blue-600 hover:underline">

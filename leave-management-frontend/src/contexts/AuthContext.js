@@ -54,14 +54,16 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome, ${signedUpUser.user.name}!`);
     } catch (error) {
       navigate('/signup');
-      if (error.response?.status === 400) {
-        toast.error('Email already exists');
-      } else if (error.response?.status === 500) {
+
+      if(role=='hod'&&error.response?.status === 400){
+        toast.error('HOD already exists');
+      }
+      else if (error.response?.status === 500) {
         toast.error('Server error');
       } else if (error.response?.status === 401) {
         toast.error('Unauthorized');
       }
-
+         toast.error(error.response.data.message);
       console.error('Signup error:', error);
     }
   };

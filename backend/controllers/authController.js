@@ -18,19 +18,37 @@ const cookieOptions = {
 exports.register = async (req, res) => {
   const { name, email, password, role, enrollmentNumber } = req.body;
 
+  if(!name || !email || !password || !role) {
+    return res.status(400).json({ message: 'Please fill in all fields' });
+  }
+
+  if(password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+  }
+
   try {
+    // If the role is HOD, check if an HOD already exists
+    if (role === 'hod') {
+      const existingHOD = await User.findOne({ role: 'hod' });
+      if (existingHOD) {
+        return res.status(400).json({ message: 'HOD already exists in the system. Only one HOD can be registered.' });
+      }
+    }
+
     // Only include enrollmentNumber if the role is student
     const userData = { name, email, password, role };
-
     if (role === 'student') {
       userData.enrollmentNumber = enrollmentNumber;
     }
 
+    // Create new user
     const user = new User(userData);
     await user.save();
 
+    // Generate JWT token
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Respond with user info
     res.cookie('token', token, cookieOptions).status(201).json({
       message: 'Registration successful',
       user: {
@@ -42,11 +60,10 @@ exports.register = async (req, res) => {
       },
     });
 
-    
+    // Optionally send welcome email here
     // const subject = 'Welcome to Leave Management System';
     // const text = `Hello, ${name}! Welcome to Leave Management System. You have successfully registered as a ${role}.`;
     // sendEmail(email, subject, text);
-  
 
   } catch (err) {
     res.status(400).json({ message: 'Registration failed' });
