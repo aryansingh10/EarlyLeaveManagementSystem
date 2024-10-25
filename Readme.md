@@ -27,6 +27,13 @@ Ensure you have Node.js, npm, and MongoDB installed.
 ```bash
 git clone https://github.com/yourusername/leave-management-system.git
 cd leave-management-system
+
+```
+
+Install dependencies:
+
+```bash
+npm install
 ```
 
 **Backend Setup**:
