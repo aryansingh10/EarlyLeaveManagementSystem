@@ -49,7 +49,7 @@ const sendDailyLink = async () => {
   try {
     console.log("Attempting to send SMS...");
     const message = await client.messages.create({
-      body: 'Check today’s approved leaves: https://yourdomain.com/approved-leaves-today',
+      body: 'Check today’s approved leaves: https://early-leave-management-system.vercel.app/approved-leaves-today',
       from: process.env.TWILIO_PHONE_NUMBER,
       to: process.env.TWILIO_RECIEVER
     });
@@ -59,9 +59,6 @@ const sendDailyLink = async () => {
   }
 };
 
-
-// Temporarily comment out to see if this affects server startup
-sendDailyLink();
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -95,6 +92,8 @@ app.get('/test-sms', async (req, res) => {
   await sendDailyLink();
   res.send('SMS sending triggered!');
 });
+
+await sendDailyLink();
 
 
 const PORT = process.env.PORT || 5000;
