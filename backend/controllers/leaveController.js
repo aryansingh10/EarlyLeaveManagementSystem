@@ -58,7 +58,7 @@ exports.updateLeaveStatus = async (req, res) => {
   const { leaveId, status } = req.body;
 
   try {
-    const leave = await Leave.findById(leaveId);
+    const leave = await Leave.findById(leaveId).populate('studentId'); // Populate to get student's email
     if (!leave) return res.status(404).json({ message: 'Leave not found' });
 
     // Coordinator approval
@@ -79,6 +79,27 @@ exports.updateLeaveStatus = async (req, res) => {
 
         // Final approval only if both HOD and Coordinator approve
         leave.finalStatus = status === 'approved' && leave.coordinatorApprovalStatus === 'approved' ? 'approved' : 'rejected';
+
+        // Send email to student if the final status is updated
+        if (leave.finalStatus !== 'pending') {
+          const emailSubject = `Leave Request ${leave.finalStatus === 'approved' ? 'Approved' : 'Rejected'}`;
+          const emailHtml = `
+            <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+              <h2 style="color: #0056b3;">Leave Request Update</h2>
+              <p>Dear <strong>${leave.studentId.name}</strong>,</p>
+              <p>Your leave request from <strong>${leave.startDate.toDateString()}</strong> to <strong>${leave.endDate.toDateString()}</strong> has been <span style="color: ${leave.finalStatus === 'approved' ? '#28a745' : '#dc3545'}; font-weight: bold;">${leave.finalStatus}</span>.</p>
+              <p><strong>Reason for Leave:</strong> ${leave.reason}</p>
+              <p>If you have any questions, feel free to reach out to the Coordinator or HOD.</p>
+              <br>
+              <p>Best Regards,</p>
+              <p><strong>Leave Sync</strong></p>
+              <hr style="border-top: 1px solid #eee;">
+              <p style="font-size: 0.9em; color: #666;">Please do not reply to this email. This is an automated notification.</p>
+            </div>
+          `;
+
+          await sendEmail(leave.studentId.email, emailSubject, emailHtml);
+        }
       } else {
         return res.status(403).json({ message: 'Coordinator approval is required first' });
       }
@@ -92,7 +113,6 @@ exports.updateLeaveStatus = async (req, res) => {
     res.status(400).json({ message: 'Error updating leave status', error: err.message });
   }
 };
-
 // Get leaves submitted by the student
 exports.getStudentLeaves = async (req, res) => {
   try {
@@ -193,6 +213,7 @@ exports.getLeaveStats = async (req, res) => {
 
 // Get all approved leaves for HOD and Coordinator
 exports.getAllApprovedLeaves = async (req, res) => {
+
   try {
     const leaves = await Leave.find({ finalStatus: 'approved' })
       .populate('studentId', 'name enrollmentNumber')

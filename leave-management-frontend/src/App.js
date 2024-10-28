@@ -137,12 +137,8 @@ const App = () => {
             }
           />
 
-          <Route path='/approved-leaves-for-day' element={
-            <PrivateRoute allowedRoles={['student','hod','coordinator']}>
-              <ApprovedLeavesToday/>
-            </PrivateRoute>
+            <Route path="/approved-leaves-today" element={<ApprovedLeavesToday />} />
 
-          }/>
           
           <Route path='/contact' element={<ContactUsForm/>}/>
 

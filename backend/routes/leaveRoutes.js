@@ -48,7 +48,7 @@ router.get('/approved-leaves', auth, roleCheck('student', 'coordinator', 'hod'),
 
 router.get('/stats', auth, roleCheck('coordinator', 'hod'), getLeaveStats);
 
-router.get('/approved-leaves-for-day', auth, fetchApprovedLeaveforaDay);
+router.get('/approved-leaves-for-day', fetchApprovedLeaveforaDay);
 
 
 module.exports = router;

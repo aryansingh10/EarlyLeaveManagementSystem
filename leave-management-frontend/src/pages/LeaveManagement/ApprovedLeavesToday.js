@@ -28,7 +28,11 @@ const ApprovedLeavesToday = () => {
   };
 
   return (
+    // Display the approved leaves for today
+  
+
     <div className="p-6 bg-gray-100 min-h-screen">
+   
       <h1 className="text-3xl font-bold text-center mb-6">Approved Leaves for Today</h1>
 
       {approvedLeaves.length > 0 ? (

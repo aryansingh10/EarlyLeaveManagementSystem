@@ -95,6 +95,7 @@ const SubmitLeave = () => {
             type="text"
             value={parentsNumber}
             onChange={(e) => setParentsNumber(e.target.value)}
+            minLength={10}
             required
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
