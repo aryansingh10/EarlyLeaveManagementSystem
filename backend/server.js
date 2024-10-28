@@ -51,7 +51,7 @@ const sendDailyLink = async () => {
     const message = await client.messages.create({
       body: 'Check today’s approved leaves: https://yourdomain.com/approved-leaves-today',
       from: process.env.TWILIO_PHONE_NUMBER,
-      to: process.env.TWILIO_Recevier
+      to: process.env.TWILIO_RECIEVER
     });
     console.log('Message sent: ', message.sid);
   } catch (error) {
