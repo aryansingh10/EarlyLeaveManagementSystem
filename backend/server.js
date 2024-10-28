@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://early-leave-management-system.vercel.app/",
     credentials: true,
   })
 );
@@ -55,8 +55,7 @@ const sendDailyLink = async () => {
     console.error('Failed to send message:', error);
   }
 };
-console.log("process.env.TWILIO_PHONE_NUMBER", process.env.TWILIO_PHONE_NUMBER);
-console.log("process.env.TWILIO_Recevier", process.env.TWILIO_Recevier);
+
 
 // Temporarily comment out to see if this affects server startup
 // sendDailyLink();
