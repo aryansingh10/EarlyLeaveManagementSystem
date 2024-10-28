@@ -45,19 +45,19 @@ try {
 }
 
 // Function to send SMS with the daily approved leaves link
-const sendDailyLink = async () => {
-  try {
-    console.log("Attempting to send SMS...");
-    const message = await client.messages.create({
-      body: 'Check today’s approved leaves: https://early-leave-management-system.vercel.app/approved-leaves-today',
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: process.env.TWILIO_RECIEVER
-    });
-    console.log('Message sent: ', message.sid);
-  } catch (error) {
-    console.error('Failed to send message:', error);
-  }
-};
+// const sendDailyLink = async () => {
+//   try {
+//     console.log("Attempting to send SMS...");
+//     const message = await client.messages.create({
+//       body: 'Check today’s approved leaves: https://early-leave-management-system.vercel.app/approved-leaves-today',
+//       from: process.env.TWILIO_PHONE_NUMBER,
+//       to: process.env.TWILIO_RECIEVER
+//     });
+//     console.log('Message sent: ', message.sid);
+//   } catch (error) {
+//     console.error('Failed to send message:', error);
+//   }
+// };
 
 
 // Routes
@@ -81,8 +81,8 @@ cron.schedule('0 0 * * *', async () => {
   }
 });
 
-// Uncomment only for testing if needed
-cron.schedule('*/1 * * * *', sendDailyLink); // Sends every minute for testing
+// // Uncomment only for testing if needed
+// cron.schedule('*/1 * * * *', sendDailyLink); // Sends every minute for testing
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Leave Management System API');
