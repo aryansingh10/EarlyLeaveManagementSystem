@@ -3,14 +3,9 @@ const User = require('../models/User');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Protect routes middleware
-exports.auth = async (req, res, next) => {
-  let token;
 
-  // Check for token in cookies
-  if (req.cookies.token) {
-    token = req.cookies.token;
-  }
+exports.auth = async (req, res, next) => {
+  let token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
   if (!token) {
     return res.status(401).send('Access Denied. No token provided.');
@@ -25,7 +20,7 @@ exports.auth = async (req, res, next) => {
   }
 };
 
-// Role check middleware
+
 exports.roleCheck = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

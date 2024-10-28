@@ -15,10 +15,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "*",
-    credentials: false,
+    origin: 'https://early-leave-management-system.vercel.app/', // Replace with actual frontend domain
+    credentials: true,
   })
-);//imp
+);
+//imp
 app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
