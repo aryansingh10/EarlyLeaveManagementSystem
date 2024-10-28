@@ -61,7 +61,7 @@ const sendDailyLink = async () => {
 
 
 // Temporarily comment out to see if this affects server startup
-// sendDailyLink();
+sendDailyLink();
 
 // Routes
 const authRoutes = require('./routes/auth');
