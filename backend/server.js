@@ -93,6 +93,7 @@ app.get('/test-sms', async (req, res) => {
   res.send('SMS sending triggered!');
 });
 
+console.log("process.env.MONGO_URI", process.env.MONGO_URI)
 
 
 const PORT = process.env.PORT || 5000;
