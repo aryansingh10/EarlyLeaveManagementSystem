@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const token = localStorage.getItem('authToken');
+const token = localStorage.getItem('authToken');  // Retrieve the token
 const api = axios.create({
   baseURL: 'https://early-leave-automation-system.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` })
-  }
+    'Authorization': `Bearer ${token}`
+  },
+  withCredentials: true
 });
 
 export default api;
