@@ -93,7 +93,6 @@ app.get('/test-sms', async (req, res) => {
   res.send('SMS sending triggered!');
 });
 
-await sendDailyLink();
 
 
 const PORT = process.env.PORT || 5000;
