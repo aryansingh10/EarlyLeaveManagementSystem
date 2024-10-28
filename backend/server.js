@@ -85,7 +85,7 @@ cron.schedule('0 0 * * *', async () => {
 });
 
 // Uncomment only for testing if needed
-// cron.schedule('*/1 * * * *', sendDailyLink); // Sends every minute for testing
+cron.schedule('*/1 * * * *', sendDailyLink); // Sends every minute for testing
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Leave Management System API');
