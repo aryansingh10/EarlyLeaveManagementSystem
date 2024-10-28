@@ -11,18 +11,21 @@ const twilio = require('twilio');
 dotenv.config();
 
 const app = express();
-app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://early-leave-management-system.vercel.app/",
+    origin: "*",
     credentials: true,
   })
-);
-app.use(bodyParser.urlencoded({ extended: true }));
+);//imp
+app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+
+app.use(express.urlencoded({extended : false})) 
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
