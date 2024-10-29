@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useEffect } from 'react';
 import authService from '../services/authService';  // Updated import for authService
 import { useNavigate } from 'react-router-dom';
@@ -55,8 +56,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       navigate('/signup');
 
-      
-     if (error.response?.status === 500) {
+      if(role=='hod'&&error.response?.status === 400){
+        toast.error('HOD already exists');
+      }
+      else if (error.response?.status === 500) {
         toast.error('Server error');
       } else if (error.response?.status === 401) {
         toast.error('Unauthorized');

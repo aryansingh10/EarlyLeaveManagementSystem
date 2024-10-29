@@ -10,6 +10,8 @@ const LeaveHistory = () => {
     const fetchLeaveHistory = async () => {
       try {
         const token = localStorage.getItem('token');
+        console.log('Token:', token); // Debugging line to check the token
+        
         const response = await api.get('/leave/student/leave-history', {
           headers: {
             Authorization: `Bearer ${token}`,

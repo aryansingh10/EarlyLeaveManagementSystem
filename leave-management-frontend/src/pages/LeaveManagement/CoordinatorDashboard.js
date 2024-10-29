@@ -7,23 +7,19 @@ const CoordinatorDashboard = () => {
   const [leaves, setLeaves] = useState([]);
   const [error, setError] = useState(null);
 
-
   useEffect(() => {
     const fetchLeaves = async () => {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        console.log("Token: ", token); // Check if the token is retrieved correctly
         const response = await api.get('/leave/coordinator-leaves', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        
-        console.log("Response Data: ", response.data); // Check the structure of the response
-        setLeaves(response.data); // Ensure this matches the expected format
+        setLeaves(response.data);
       } catch (err) {
-        console.error("Error fetching leaves: ", err); // Log the error for debugging
+        console.error("Error fetching leaves: ", err);
         setError('Error fetching leave requests');
         toast.error('Error fetching leave requests');
       } finally {
@@ -45,14 +41,8 @@ const CoordinatorDashboard = () => {
 
       toast.success(`Leave ${status} successfully`);
       setLeaves((prevLeaves) =>
-        prevLeaves.map((leave) =>
-          leave._id === leaveId ? { ...leave, coordinatorApprovalStatus: status } : leave
-        )
+        prevLeaves.filter((leave) => leave._id !== leaveId)
       );
-
-      // Filter out the updated leave from the UI
-       setLeaves((prevLeaves) => prevLeaves.filter((leave) => leave._id !== leaveId));
-       
     } catch (err) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} leave: `, err);
       toast.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} leave`);
@@ -78,9 +68,6 @@ const CoordinatorDashboard = () => {
     );
   }
 
-  console.log("Leaves: ", leaves); // Check the structure of the leaves array
-  
-
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">Coordinator Leave Approvals</h1>
@@ -92,45 +79,56 @@ const CoordinatorDashboard = () => {
           {leaves.map((leave) => (
             <li key={leave._id} className="bg-white p-4 rounded-lg shadow-md">
               <p className="font-semibold">
-                Name: 
-                <span className="font-semibold uppercase">{leave.studentId.name}</span> 
-                <span className="text-gray-500">({leave.studentId.enrollmentNumber})</span>
+                <span className="uppercase">{leave.studentId?.name}</span>
+                <span className="text-gray-500"> ({leave.studentId?.enrollmentNumber})</span>
               </p>
               <div className="mt-2 p-2 bg-blue-50 border-l-4 border-blue-500 rounded-md">
                 <p className="font-medium text-gray-800">
-                  Reason: {leave.reason}
+                  Reason: <span className="font-normal">{leave.reason}</span>
                 </p>
               </div>
-              <div>
-                {console.log(leave.parentsNumber)}
-                <p className="font-semibold mt-2">
-                  parentsNumber: {leave.parentsNumber}
-                  </p>
-              </div>
-              <p className="font-semibold mt-2">
-                {leave.reason} (from {leave.startDate ? new Date(leave.startDate).toLocaleDateString() : 'N/A'} to{' '}
-                {leave.endDate ? new Date(leave.endDate).toLocaleDateString() : 'N/A'}) - Status: 
-                <span className={`font-bold ${leave.coordinatorApprovalStatus === 'approved' ? 'text-green-500' : 'text-red-500'}`}>
-                  {leave.coordinatorApprovalStatus}
-                </span>
-                {leave.isEarlyLeave && <span className="text-yellow-600"> (Early Leave)</span>}
+
+              <p className="mt-2">
+                Parents Number: <span className="font-semibold">{leave.parentsNumber}</span>
               </p>
-              <div className="flex space-x-2 mt-4">
-                <button 
-                  onClick={() => handleApprove(leave._id)} 
-                  className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-500 transition duration-200"
-                  disabled={leave.coordinatorApprovalStatus === 'approved'}
-                >
-                  Approve
-                </button>
-                <button 
-                  onClick={() => handleReject(leave._id)} 
-                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition duration-200"
-                  disabled={leave.coordinatorApprovalStatus === 'rejected'}
-                >
-                  Reject
-                </button>
+              
+              <p className="mt-2">
+                From {new Date(leave.startDate).toLocaleDateString()} to {new Date(leave.endDate).toLocaleDateString()}
+              </p>
+
+              <div className="mt-2 flex flex-wrap gap-2">
+                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${
+                  leave.coordinatorApprovalStatus === 'approved' ? 'bg-green-100 text-green-800' :
+                  leave.coordinatorApprovalStatus === 'rejected' ? 'bg-red-100 text-red-800' :
+                  'bg-yellow-100 text-yellow-800'
+                }`}>
+                  Coordinator Status: {leave.coordinatorApprovalStatus}
+                </span>
+                {leave.isEarlyLeave && (
+                  <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-800 text-sm font-semibold">
+                    Early Leave
+                  </span>
+                )}
               </div>
+
+              {leave.coordinatorApprovalStatus === 'pending' ? (
+                <div className="flex space-x-2 mt-4">
+                  <button 
+                    onClick={() => handleApprove(leave._id)} 
+                    className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-500 transition duration-200"
+                  >
+                    Approve
+                  </button>
+                  <button 
+                    onClick={() => handleReject(leave._id)} 
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition duration-200"
+                  >
+                    Reject
+                  </button>
+                </div>
+              ) : (
+                <p className="mt-2 text-gray-600">This leave request has been {leave.coordinatorApprovalStatus}.</p>
+              )}
             </li>
           ))}
         </ul>
