@@ -9,7 +9,7 @@ const LeaveHistory = () => {
   useEffect(() => {
     const fetchLeaveHistory = async () => {
       try {
-        // No need to manually include the token in headers anymore
+      
         const response = await api.get('/leave/student/leave-history');
         setLeaveHistory(response.data);
         console.log(response.data);

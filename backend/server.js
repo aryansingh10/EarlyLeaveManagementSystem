@@ -13,8 +13,9 @@ app.use(bodyParser.json());
 app.use(cookieParser()); 
 
 app.use(cors({
-  origin: 'https://early-leave-management-system.vercel.app',
-  credentials: false
+  origin: 'http://localhost:3000',
+  credentials: true
+
 }));
 
 
