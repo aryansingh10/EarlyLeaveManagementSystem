@@ -58,8 +58,11 @@ exports.register = async (req, res) => {
         name: user.name,
         email: user.email,
         enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
+        token: token,
       },
     });
+    
+
 
     // Optionally send welcome email here
     // const subject = 'Welcome to Leave Management System';
@@ -94,6 +97,9 @@ exports.login = async (req, res) => {
         enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
       },
     });
+
+
+
   } catch (err) {
     console.error('Login Error:', err);
     res.status(400).json({ message: 'Login failed' });

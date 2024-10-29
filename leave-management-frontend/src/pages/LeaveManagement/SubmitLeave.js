@@ -32,6 +32,7 @@ const SubmitLeave = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
+      
       const response = await api.post(
         '/leave/submit',
         { reason, startDate, endDate, isEarlyLeave, parentsNumber, coordinatorId: selectedCoordinator },

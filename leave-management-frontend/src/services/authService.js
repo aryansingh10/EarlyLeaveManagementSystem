@@ -4,6 +4,9 @@ const login = async (email, password) => {
   try {
     const response = await api.post('/auth/login', { email, password });
     console.log('Login API Response:', response.data);
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+    
     
     return response.data;
   } catch (error) {
@@ -23,6 +26,9 @@ const signup = async (name, email, password, role, enrollmentNumber = null) => {
     }
 
     const response = await api.post('/auth/register', data);
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+
     console.log('Signup API Response:', response.data);
     
     return response.data;

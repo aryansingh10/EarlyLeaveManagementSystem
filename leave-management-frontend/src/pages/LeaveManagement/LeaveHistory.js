@@ -9,16 +9,12 @@ const LeaveHistory = () => {
   useEffect(() => {
     const fetchLeaveHistory = async () => {
       try {
-        const token = localStorage.getItem('token');
-        console.log('Token:', token); // Debugging line to check the token
-        
-        const response = await api.get('/leave/student/leave-history', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // No need to manually include the token in headers anymore
+        const response = await api.get('/leave/student/leave-history');
         setLeaveHistory(response.data);
+        console.log(response.data);
       } catch (error) {
+        console.error('Error fetching leave history:', error);
         toast.error('Error fetching leave history');
       }
     };
@@ -29,12 +25,7 @@ const LeaveHistory = () => {
   const deleteLeave = async (id) => {
     try {
       console.log('Deleting leave with ID:', id); // Debugging line to check the ID
-      const token = localStorage.getItem('token');
-      const response = await api.delete(`/leave/leave/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.delete(`/leave/leave/${id}`);
       console.log(response); // Debugging line to check the response 
       
       toast.success('Leave deleted successfully');
@@ -90,7 +81,7 @@ const LeaveHistory = () => {
         ))}
       </ul>
     </div>
-  );
+  );  
 };
 
 export default LeaveHistory;
