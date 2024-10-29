@@ -10,11 +10,13 @@ const cron = require('node-cron');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cookieParser()); 
+
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+
+  origin: 'https://early-leave-management-system.vercel.app/',
   credentials: true
+
 
 }));
 
@@ -26,6 +28,7 @@ app.use(express.json());
 
 
 app.use(express.urlencoded({extended : false})) 
+app.use(cookieParser()); 
 const authRoutes = require('./routes/auth');
 const leaveRoutes = require('./routes/leaveRoutes');
 
