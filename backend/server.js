@@ -14,13 +14,11 @@ app.use(bodyParser.json());
 
 app.use(cors({
 
-  origin: 'https://early-leave-management-system-aryan-singh-thakurs-projects.vercel.app',
-  credentials: true
+  origin: 'http://localhost:3000',
+  credentials: true,
 
 
 }));
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
