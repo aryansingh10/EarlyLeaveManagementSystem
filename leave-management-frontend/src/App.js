@@ -103,9 +103,9 @@ const App = () => {
           <Route
             path="/leave-history"
             element={
-              <PrivateRoute allowedRoles={['student']}>
+              
                 <LeaveHistory />
-              </PrivateRoute>
+            
             }
           />
 
