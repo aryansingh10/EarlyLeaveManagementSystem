@@ -37,7 +37,7 @@ router.get('/leave/:id', auth, getLeaveById);
 router.get('/leaves-by-date', auth, getLeavesByDate);
 
 
-router.get('/student/leave-history', getLeaveHistory);
+router.get('/student/leave-history', auth, roleCheck('student'), getLeaveHistory);
 
 
 router.delete('/leave/:id', auth, roleCheck('student'), deleteLeave);
