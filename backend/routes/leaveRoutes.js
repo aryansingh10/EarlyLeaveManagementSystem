@@ -39,7 +39,7 @@ router.get('/leaves-by-date', auth, getLeavesByDate);
 
 router.get('/student/leave-history', auth, roleCheck('student'), getLeaveHistory);
 
-
+  
 router.delete('/leave/:id', auth, roleCheck('student'), deleteLeave);
 
 
