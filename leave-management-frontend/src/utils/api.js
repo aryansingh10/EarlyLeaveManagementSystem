@@ -1,17 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://early-leave-management-system.vercel.app/api',
-  withCredentials: true,
-
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    common: {
-      'Access-Control-Allow-Origin': '*',
-    },
-
   },
+  withCredentials: true,
 });
 
 
