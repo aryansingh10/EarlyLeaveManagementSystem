@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
 
-  origin: 'https://early-leave-management-system-qvpy.vercel.app',
+  origin: 'https://early-leave-automation-cse.vercel.app/',
   credentials: true,
 }));
 
