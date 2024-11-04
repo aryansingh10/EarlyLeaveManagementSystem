@@ -14,10 +14,8 @@ app.use(bodyParser.json());
 
 app.use(cors({
 
-  origin: 'https://early-leave-management-system-ihgm.vercel.app/',
+  origin: 'https://early-leave-management-system-qvpy.vercel.app',
   credentials: true,
-
-
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
