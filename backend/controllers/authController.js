@@ -9,11 +9,10 @@ dotenv.config();
 
 // Set cookie options
 const cookieOptions = {
-  httpOnly: false, 
+  httpOnly: true, 
   secure: process.env.NODE_ENV === 'production', 
   sameSite: 'Lax' || 'None' || 'Strict', 
-  maxAge: 3600000 
-  
+  maxAge: 3600000 ,  
 };
 
 // Register Function

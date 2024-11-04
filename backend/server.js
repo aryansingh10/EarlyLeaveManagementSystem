@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
 
-  origin: 'http://localhost:3000',
+  origin: 'https://early-leave-management-system-ihgm.vercel.app',
   credentials: true,
 
 
