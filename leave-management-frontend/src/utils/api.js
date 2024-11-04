@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://earlyleavemanagementsystem.onrender.com/api',
+  baseURL: 'https://early-leave-management-system.vercel.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
