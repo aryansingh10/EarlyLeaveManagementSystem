@@ -11,7 +11,7 @@ dotenv.config();
 const cookieOptions = {
   httpOnly: true, 
   secure: process.env.NODE_ENV === 'production', 
-  sameSite: 'Lax' || 'None' || 'Strict', 
+  sameSite: 'None', 
   maxAge: 3600000 ,  
 };
 

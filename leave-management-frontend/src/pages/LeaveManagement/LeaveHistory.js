@@ -9,8 +9,7 @@ const LeaveHistory = () => {
   useEffect(() => {
     const fetchLeaveHistory = async () => {
       try {
-      
-        const response = await api.get('/leave/student/leave-history');
+        const response = await api.get('/leave/student/leave-history', { withCredentials: true });
         setLeaveHistory(response.data);
         console.log(response.data);
       } catch (error) {
@@ -18,7 +17,7 @@ const LeaveHistory = () => {
         toast.error('Error fetching leave history');
       }
     };
-
+    
     fetchLeaveHistory();
   }, []);
 
