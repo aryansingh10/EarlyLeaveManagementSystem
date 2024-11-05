@@ -62,6 +62,17 @@ const HODDashboard = () => {
     }
   };
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-yellow-100 text-yellow-800';
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">HOD Leave Approvals</h1>
@@ -90,18 +101,10 @@ const HODDashboard = () => {
                 {new Date(leave.endDate).toLocaleDateString()}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${
-                  leave.finalStatus === 'approved' ? 'bg-green-100 text-green-800' : 
-                  leave.finalStatus === 'rejected' ? 'bg-red-100 text-red-800' : 
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
+                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(leave.finalStatus)}`}>
                   Status: {leave.finalStatus}
                 </span>
-                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${
-                  leave.coordinatorApprovalStatus === 'approved' ? 'bg-green-100 text-green-800' : 
-                  leave.coordinatorApprovalStatus === 'rejected' ? 'bg-red-100 text-red-800' : 
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
+                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(leave.coordinatorApprovalStatus)}`}>
                   Coordinator: {leave.coordinatorApprovalStatus}
                 </span>
                 {leave.coordinatorId && (
@@ -152,13 +155,7 @@ const HODDashboard = () => {
         <p className="text-center mt-4">No leave requests available</p>
       )}
 
-  <button>
-    <Link to="/approved-leaves" className="w-full max-w-xs">
-      <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-500 transition duration-200">
-        View Approved Leaves
-      </button>
-    </Link>
-  </button>
+     \
     </div>
   );
 };

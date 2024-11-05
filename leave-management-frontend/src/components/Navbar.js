@@ -32,6 +32,8 @@ const Navbar = () => {
                   <li>
                     <Link to="/coordinator-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
                   </li>
+
+                  <li><Link to ="approved-leaves-today" >Approved Leaves</Link></li>
                 </>
               )}
               {user.user.role === 'hod' && (
@@ -42,6 +44,8 @@ const Navbar = () => {
                   <li>
                     <Link to="/hod-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
                   </li>
+
+                  <li><Link to ="approved-leaves-today" >Approved Leaves</Link></li>
                 </>
               )}
               <li>
