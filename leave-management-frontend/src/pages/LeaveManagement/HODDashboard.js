@@ -155,9 +155,9 @@ const HODDashboard = () => {
         <p className="text-center mt-4">No leave requests available</p>
       )}
 
-     \
     </div>
   );
 };
 
 export default HODDashboard;
+
