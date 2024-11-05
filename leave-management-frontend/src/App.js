@@ -151,7 +151,7 @@ const App = () => {
 
 
         </Routes>
-        <Footer />
+        <Footer/>
       </AuthProvider>
     
     </Router>
