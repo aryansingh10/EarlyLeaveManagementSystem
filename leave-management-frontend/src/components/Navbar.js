@@ -8,10 +8,10 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-white text-xl font-bold" > <Link to="/">Leave Sync </Link></div>
+        <div className="text-white text-xl font-bold">
+          <Link to="/">Leave Sync</Link>
+        </div>
         <ul className="flex space-x-4">
-
-          {/* Show user-specific links based on authentication status */}
           {user && user.user ? (
             <>
               {user.user.role === 'student' && (
@@ -32,8 +32,9 @@ const Navbar = () => {
                   <li>
                     <Link to="/coordinator-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
                   </li>
-
-                  <li><Link to ="approved-leaves-today" >Approved Leaves</Link></li>
+                  <li>
+                    <Link to="/approved-leaves-today" className="text-white hover:text-blue-300 transition duration-200">Approved Leaves</Link>
+                  </li>
                 </>
               )}
               {user.user.role === 'hod' && (
@@ -44,8 +45,9 @@ const Navbar = () => {
                   <li>
                     <Link to="/hod-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
                   </li>
-
-                  <li><Link to ="approved-leaves-today" className='text-white hover:text-blue-300 transition duration-200' >Approved Leaves</Link></li>
+                  <li>
+                    <Link to="/approved-leaves-today" className="text-white hover:text-blue-300 transition duration-200">Approved Leaves</Link>
+                  </li>
                 </>
               )}
               <li>
@@ -69,13 +71,8 @@ const Navbar = () => {
                 <Link to="/login" className="text-white hover:text-blue-300 transition duration-200">Login</Link>
               </li>
               <li>
-                <Link
-                  to="/signup"
-                  className="text-white hover:text-blue-300 transition duration-200">
-                  Signup
-                </Link>
+                <Link to="/signup" className="text-white hover:text-blue-300 transition duration-200">Signup</Link>
               </li>
-
             </>
           )}
         </ul>
