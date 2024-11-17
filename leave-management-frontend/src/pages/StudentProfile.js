@@ -28,6 +28,8 @@ const StudentProfile = () => {
         <p className="text-lg font-semibold">Name: <span className="font-normal">{user.user.name}</span></p>
         <p className="text-lg font-semibold">Email: <span className="font-normal">{user.user.email}</span></p>
         <p className="text-lg font-semibold">Enrollment Number: <span className="font-normal">{user.user.enrollmentNumber}</span></p>
+        <p className="text-lg font-semibold">Year: <span className="font-normal">{user.user.year}</span></p>
+        <p className="text-lg font-semibold">Class/Section: <span className="font-normal">{user.user.class}</span></p>
       </div>
     </div>
   );

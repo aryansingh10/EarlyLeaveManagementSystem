@@ -7,7 +7,7 @@ const SubmitLeave = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isEarlyLeave, setIsEarlyLeave] = useState(false);
-  const [parentsNumber, setParentsNumber] = useState('');
+  const [parentsNumber, setParentsNumber] = useState('+91 '); // Start with +91 followed by a space
   const [coordinators, setCoordinators] = useState([]);
   const [selectedCoordinator, setSelectedCoordinator] = useState('');
 
@@ -35,14 +35,14 @@ const SubmitLeave = () => {
       const response = await api.post(
         '/leave/submit',
         { reason, startDate, endDate, isEarlyLeave, parentsNumber, coordinatorId: selectedCoordinator },
-  
       );
       toast.success('Leave submitted successfully');
+      // Reset form fields
       setReason('');
       setStartDate(today);
       setEndDate(today);
       setIsEarlyLeave(false);
-      setParentsNumber('');
+      setParentsNumber('+91 '); // Reset to default with space
       setSelectedCoordinator('');
     } catch (error) {
       const message = error.response?.data?.message || 'Error submitting leave';
@@ -68,21 +68,12 @@ const SubmitLeave = () => {
         {!isEarlyLeave && (
           <>
             <div className="mb-4">
-              <label className="block text-gray-600 mb-2">Start Date:</label>
+              <label className="block text-gray-600 mb-2"> Date:</label>
               <input
                 type="date"
                 value={startDate}
                 min={today}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-600 mb-2">End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -94,11 +85,19 @@ const SubmitLeave = () => {
           <input
             type="text"
             value={parentsNumber}
-            onChange={(e) => setParentsNumber(e.target.value)}
-            minLength={10}
+            onChange={(e) => {
+              // Allow only digits after +91 and space
+              const inputValue = e.target.value;
+              if (/^\+91\s\d*$/.test(inputValue)) {
+                setParentsNumber(inputValue);
+              }
+            }}
             required
+            minLength={14} // +91 followed by a space and 10 digits
+            maxLength={14} // +91 followed by a space and 10 digits
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <small className="text-gray-500">Format: +91 XXXXXXXXXX</small>
         </div>
 
         <div className="mb-4">

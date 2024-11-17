@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect } from 'react';
 import authService from '../services/authService';  // Updated import for authService
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
- 
   const login = async (email, password) => {
     try {
       const loggedInUser = await authService.login(email, password);
@@ -42,10 +40,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
-  const signup = async (name, email, password, role, enrollmentNumber = null) => {
+  // Updated signup to include class and section fields for students
+  const signup = async (name, email, password, role, enrollmentNumber = null, userClass = null, year = null) => {
     try {
-      const signedUpUser = await authService.signup(name, email, password, role, enrollmentNumber);
+      const signedUpUser = await authService.signup(name, email, password, role, enrollmentNumber, userClass, year);
       setUser(signedUpUser);
 
       localStorage.setItem('user', JSON.stringify(signedUpUser));
@@ -56,15 +54,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       navigate('/signup');
 
-      if(role=='hod'&&error.response?.status === 400){
+      if (role === 'hod' && error.response?.status === 400) {
         toast.error('HOD already exists');
-      }
-      else if (error.response?.status === 500) {
+      } else if (error.response?.status === 500) {
         toast.error('Server error');
       } else if (error.response?.status === 401) {
         toast.error('Unauthorized');
+      } else {
+        toast.error(error.response?.data?.message || 'Signup error');
       }
-         toast.error(error.response.data.message);
       console.error('Signup error:', error);
     }
   };

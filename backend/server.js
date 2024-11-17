@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
 
-  origin: 'https://early-leave-automation-cse.vercel.app',
+  origin: 'http://localhost:3000',
   credentials: true,
 }));
 
@@ -28,9 +28,11 @@ app.use(cookieParser(
 
 const authRoutes = require('./routes/auth');
 const leaveRoutes = require('./routes/leaveRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leave', leaveRoutes);
+app.use('/api/messages', messageRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -50,6 +52,7 @@ mongoose.connect(process.env.MONGO_URI, {
       console.error('Error deleting old leaves:', error);
     }
   });
+  
   
 
 app.get('/', (req, res) => {

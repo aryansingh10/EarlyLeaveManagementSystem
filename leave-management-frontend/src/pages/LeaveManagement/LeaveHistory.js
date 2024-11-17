@@ -17,7 +17,7 @@ const LeaveHistory = () => {
         toast.error('Error fetching leave history');
       }
     };
-    
+
     fetchLeaveHistory();
   }, []);
 
@@ -25,8 +25,8 @@ const LeaveHistory = () => {
     try {
       console.log('Deleting leave with ID:', id); // Debugging line to check the ID
       const response = await api.delete(`/leave/leave/${id}`);
-      console.log(response); // Debugging line to check the response 
-      
+      console.log(response); // Debugging line to check the response
+
       toast.success('Leave deleted successfully');
       // Filter out the deleted leave from the UI
       setLeaveHistory(leaveHistory.filter(leave => leave._id !== id));
@@ -34,6 +34,12 @@ const LeaveHistory = () => {
       console.error('Error deleting leave:', error.response?.data?.message || error.message);
       toast.error(error.response?.data?.message || 'Error deleting leave');
     }
+  };
+
+  // Function to format date as dd/mm/yy
+  const formatDate = (date) => {
+    const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+    return new Intl.DateTimeFormat('en-GB', options).format(new Date(date));
   };
 
   return (
@@ -45,9 +51,9 @@ const LeaveHistory = () => {
             <div className="flex-1">
               <p className="font-bold text-lg text-gray-800 mb-2">{leave.reason}</p>
               <p className="text-gray-600 mb-2">
-                <span className="font-semibold">From:</span> {new Date(leave.startDate).toLocaleDateString()} <span className="font-semibold">To:</span> {new Date(leave.endDate).toLocaleDateString()}
+                <span className="font-semibold">Date</span> {formatDate(leave.startDate)} 
               </p>
-              
+
               {/* Conditional rendering for status display */}
               {leave.coordinatorApprovalStatus === 'rejected' ? (
                 <p className="text-red-500 font-bold">Final Status: {leave.finalStatus}</p>
@@ -80,7 +86,7 @@ const LeaveHistory = () => {
         ))}
       </ul>
     </div>
-  );  
+  );
 };
 
 export default LeaveHistory;

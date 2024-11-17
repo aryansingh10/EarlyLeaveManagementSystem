@@ -42,11 +42,41 @@ exports.submitLeave = async (req, res) => {
     const coordinator = await User.findById(coordinatorId); // Get the selected coordinator
     const user = await User.findById(req.user.id);
 
-    const subject = 'New Leave Application';
-    const text = `A new leave application has been submitted by ${user.name} (${user.enrollmentNumber}) for ${leave.reason}. Please login to the portal to view the application.`;
+    const subject = 'Early Leave Application Submitted';
 
-    // if (hod) sendEmail(hod.email, subject, text);
-    // if (coordinator) sendEmail(coordinator.email, subject, text);
+// Email for Coordinator
+const textCord = `
+  <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <p>Dear ${coordinator.name || 'Coordinator'},</p>
+      <p>An early leave application has been submitted by <strong>${user.name}</strong> (Enrollment Number: <strong>${user.enrollmentNumber}</strong>) from <strong>Class ${user.class}, Year ${user.year}</strong>.</p>
+      <p><strong>Reason for leave:</strong> ${leave.reason}</p>
+      <p>Please log in to the portal to review and take the necessary action.</p>
+      <br>
+      <p>Best regards,</p>
+      <p><strong>Leave Sync Team</strong></p>
+    </body>
+  </html>
+`;
+
+// Email for HOD
+const textHod = `
+  <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <p>Dear ${hod.name || 'HOD'},</p>
+      <p>An early leave application has been submitted by <strong>${user.name}</strong> (Enrollment Number: <strong>${user.enrollmentNumber}</strong>) from <strong>Class ${user.class}, Year ${user.year}</strong>.</p>
+      <p><strong>Reason for leave:</strong> ${leave.reason}</p>
+      <p>Please log in to the portal to review and take the necessary action.</p>
+      <br>
+      <p>Best regards,</p>
+      <p><strong>Leave Sync Team</strong></p>
+    </body>
+  </html>
+`;
+
+
+    if (hod) sendEmail(hod.email, subject, textHod);
+    if (coordinator) sendEmail(coordinator.email, subject, textCord);
 
   } catch (err) {
     console.error("Error submitting leave or sending email:", err);
@@ -200,9 +230,9 @@ exports.deleteLeave = async (req, res) => {
 // Get leave statistics (rejected, approved, pending)
 exports.getLeaveStats = async (req, res) => {
   try {
-    const rejected = await Leave.find({ finalStatus: 'rejected' });
-    const approvedLeaves = await Leave.find({ finalStatus: 'approved' });
-    const pendingLeaves = await Leave.find({ finalStatus: 'pending' });
+    const rejected = await Leave.find({ finalStatus: 'rejected' }).populate('studentId', 'name enrollmentNumber class year');
+    const approvedLeaves = await Leave.find({ finalStatus: 'approved' }).populate('studentId', 'name enrollmentNumber class year');
+    const pendingLeaves = await Leave.find({ finalStatus: 'pending' }).populate('studentId', 'name enrollmentNumber class year');
     const totalLeaves = rejected.length + approvedLeaves.length + pendingLeaves.length;
 
     res.status(200).json({ totalLeaves, approvedLeaves, pendingLeaves });
@@ -231,7 +261,7 @@ exports.fetchApprovedLeaveforaDay=async(req,res)=>{
     $or: [{ startDate: today }, { endDate: today }],
 
   })
-  .populate('studentId', 'name enrollmentNumber');
+  .populate('studentId', 'name enrollmentNumber class year');
   res.status(200).json(approvedLeaves);
 
 }

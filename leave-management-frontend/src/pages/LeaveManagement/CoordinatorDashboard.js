@@ -6,6 +6,7 @@ const CoordinatorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [leaves, setLeaves] = useState([]);
   const [error, setError] = useState(null);
+  const [messages, setMessages] = useState({}); // For storing messages entered for each leave
 
   useEffect(() => {
     const fetchLeaves = async () => {
@@ -52,6 +53,28 @@ const CoordinatorDashboard = () => {
   const handleApprove = (leaveId) => updateLeaveStatus(leaveId, 'approved');
   const handleReject = (leaveId) => updateLeaveStatus(leaveId, 'rejected');
 
+  const handleMessageChange = (leaveId, message) => {
+    setMessages((prevMessages) => ({ ...prevMessages, [leaveId]: message }));
+  };
+
+  const handleAddMessage = async (leaveId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const message = messages[leaveId]; // Get the message for this leave request
+      await api.post(`/messages/leave/${leaveId}/message`, { coordinatorMessage: message }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      toast.success('Message added successfully');
+      setMessages((prevMessages) => ({ ...prevMessages, [leaveId]: '' })); // Clear message input
+    } catch (err) {
+      console.error('Error adding message: ', err);
+      toast.error('Error adding message');
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
@@ -88,12 +111,13 @@ const CoordinatorDashboard = () => {
                 </p>
               </div>
 
+              {/* Display Parents Number with +91 Prefix */}
               <p className="mt-2">
-                Parents Number: <span className="font-semibold">{leave.parentsNumber}</span>
+                Parents Number: <span className="font-semibold">+91 {leave.parentsNumber}</span>
               </p>
               
               <p className="mt-2">
-                From {new Date(leave.startDate).toLocaleDateString()} to {new Date(leave.endDate).toLocaleDateString()}
+                Date: {new Date(leave.startDate).toLocaleDateString('en-GB')}
               </p>
 
               <div className="mt-2 flex flex-wrap gap-2">
@@ -109,6 +133,23 @@ const CoordinatorDashboard = () => {
                     Early Leave
                   </span>
                 )}
+              </div>
+
+              {/* Message Input and Button Above Approval Actions */}
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="Enter a Remark regarding this leave"
+                  value={messages[leave._id] || ''}
+                  onChange={(e) => handleMessageChange(leave._id, e.target.value)}
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  onClick={() => handleAddMessage(leave._id)}
+                  className="mt-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition duration-200"
+                >
+                  Add Remark
+                </button>
               </div>
 
               {leave.coordinatorApprovalStatus === 'pending' ? (

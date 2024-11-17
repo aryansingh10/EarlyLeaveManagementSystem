@@ -1,45 +1,46 @@
-
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
-const nodemailer = require('nodemailer');
 const sendEmail = require('../utils/nodemailer');
 dotenv.config();
 
-// Set cookie options
 const cookieOptions = {
-  httpOnly: true, 
-  secure: process.env.NODE_ENV === 'production', 
-  sameSite: 'None', 
-  maxAge: 3600000 ,  
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production', // Use Secure only in production
+  sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Use SameSite=None only in production
+  maxAge: 3600000,
 };
 
 // Register Function
 exports.register = async (req, res) => {
-  const { name, email, password, role, enrollmentNumber } = req.body;
+  const { name, email, password, role, enrollmentNumber, class: userClass, year, department } = req.body;
 
-  if(!name || !email || !password || !role) {
-    return res.status(400).json({ message: 'Please fill in all fields' });
+  if (!name || !email || !password || !role || !department) {
+    return res.status(400).json({ message: 'Please fill in all required fields' });
   }
 
-  if(password.length < 8) {
+  if (password.length < 8) {
     return res.status(400).json({ message: 'Password must be at least 8 characters long' });
   }
 
   try {
-    // If the role is HOD, check if an HOD already exists
+    // If the role is HOD, check if an HOD already exists for the department
     if (role === 'hod') {
-      const existingHOD = await User.findOne({ role: 'hod' });
+      const existingHOD = await User.findOne({ role: 'hod', department });
       if (existingHOD) {
-        return res.status(400).json({ message: 'HOD already exists in the system. Only one HOD can be registered.' });
+        return res.status(400).json({
+          message: `HOD already exists for the ${department} department. Only one HOD can be registered per department.`,
+        });
       }
     }
 
-    // Only include enrollmentNumber if the role is student
-    const userData = { name, email, password, role };
+    // Prepare user data, including role-specific fields
+    const userData = { name, email, password, role, department };
     if (role === 'student') {
       userData.enrollmentNumber = enrollmentNumber;
+      userData.class = userClass;
+      userData.year = year;
     }
 
     // Create new user
@@ -49,7 +50,7 @@ exports.register = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Respond with user info
+    // Set cookie and respond with user info
     res.cookie('token', token, cookieOptions).status(201).json({
       message: 'Registration successful',
       user: {
@@ -57,19 +58,21 @@ exports.register = async (req, res) => {
         role: user.role,
         name: user.name,
         email: user.email,
-        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
-        token: token,
+        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,
+        class: user.role === 'student' ? user.class : undefined,
+        year: user.role === 'student' ? user.year : undefined,
+        department: user.department,
       },
+      token: token,
     });
-    
 
-
-    // Optionally send welcome email here
-    // const subject = 'Welcome to Leave Management System';
-    // const text = `Hello, ${name}! Welcome to Leave Management System. You have successfully registered as a ${role}.`;
-    // sendEmail(email, subject, text);
+    // Optionally send welcome email
+    const subject = 'Welcome to Leave Sync';
+    const text = `Hello, ${name}! Welcome to Leave Sync. You have successfully registered as a ${role} in the ${department} department.`;
+    sendEmail(email, subject, text);
 
   } catch (err) {
+    console.error('Registration Error:', err);
     res.status(400).json({ message: 'Registration failed' });
   }
 };
@@ -94,11 +97,13 @@ exports.login = async (req, res) => {
         role: user.role,
         name: user.name,
         email: user.email,
-        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
+        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,
+        class: user.role === 'student' ? user.class : undefined,
+        year: user.role === 'student' ? user.year : undefined,
+        department: user.department,
       },
+      token: token,
     });
-
-
 
   } catch (err) {
     console.error('Login Error:', err);
@@ -123,19 +128,25 @@ exports.getMe = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,  // Include enrollmentNumber for students
-      }
+        enrollmentNumber: user.role === 'student' ? user.enrollmentNumber : undefined,
+        class: user.role === 'student' ? user.class : undefined,
+        year: user.role === 'student' ? user.year : undefined,
+        department: user.department,
+      },
     });
   } catch (err) {
+    console.error('GetMe Error:', err);
     res.status(500).json({ message: 'Server Error' });
   }
 };
 
+// Get All Coordinators Function
 exports.getAllCoordinators = async (req, res) => {
   try {
     const coordinators = await User.find({ role: 'coordinator' }).select('-password');
     res.status(200).json(coordinators);
   } catch (err) {
+    console.error('GetAllCoordinators Error:', err);
     res.status(500).json({ message: 'Server Error' });
   }
-}
+};

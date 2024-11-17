@@ -12,11 +12,11 @@ function Footer() {
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
           <a href="/about" className="text-sm hover:underline transition duration-200">About Us</a>
           {/* <a href="#privacy" className="text-sm hover:underline transition duration-200">Privacy Policy</a> */}
-          <a href="/contact" className="text-sm hover:underline transition duration-200">Contact Us</a>
+          {/* <a href="/contact" className="text-sm hover:underline transition duration-200">Contact Us</a> */}
         </div>
 
         <div className="text-sm mt-4 md:mt-0">
-          Developed and designed by <strong>Aryan Singh Thakur</strong>
+          Developed and designed by <strong>Group-2</strong>
         </div>
       </div>
     </footer>

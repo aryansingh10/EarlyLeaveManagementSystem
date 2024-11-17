@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../utils/api';
-import { Link } from 'react-router-dom';
 
 const HODDashboard = () => {
   const [leaves, setLeaves] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState({}); // State to store messages for each leave
 
   useEffect(() => {
     const fetchLeaves = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('token');
         const response = await api.get('/leave/hod-leaves', {
@@ -17,50 +19,58 @@ const HODDashboard = () => {
         });
         setLeaves(response.data);
       } catch (error) {
+        console.error('Error fetching leave requests:', error);
         toast.error('Error fetching leave requests');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchLeaves();
   }, []);
 
-  const handleApprove = async (leaveId) => {
+  useEffect(() => {
+    // Fetch messages for each leave
+    leaves.forEach(async (leave) => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await api.get(`/messages/leave/${leave._id}/messages`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [leave._id]: response.data, // Store messages by leave ID
+        }));
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    });
+  }, [leaves]);
+
+  const updateLeaveStatus = async (leaveId, status) => {
     try {
       const token = localStorage.getItem('token');
       await api.put(
         '/leave/update-status',
-        { leaveId, status: 'approved', role: 'hod' },
+        { leaveId, status, role: 'hod' },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      toast.success('Leave approved successfully by HOD');
+      toast.success(`Leave ${status} successfully by HOD`);
       setLeaves((prevLeaves) => prevLeaves.filter((leave) => leave._id !== leaveId));
     } catch (error) {
-      toast.error('Error approving leave');
+      console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} leave: `, error);
+      toast.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} leave`);
     }
   };
 
-  const handleReject = async (leaveId) => {
-    try {
-      const token = localStorage.getItem('token');
-      await api.put(
-        '/leave/update-status',
-        { leaveId, status: 'rejected', role: 'hod' },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success('Leave rejected successfully by HOD');
-      setLeaves((prevLeaves) => prevLeaves.filter((leave) => leave._id !== leaveId));
-    } catch (error) {
-      toast.error('Error rejecting leave');
-    }
-  };
+  const handleApprove = (leaveId) => updateLeaveStatus(leaveId, 'approved');
+  const handleReject = (leaveId) => updateLeaveStatus(leaveId, 'rejected');
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -72,6 +82,14 @@ const HODDashboard = () => {
         return 'bg-yellow-100 text-yellow-800';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="text-center text-lg">Loading leave requests...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -93,13 +111,24 @@ const HODDashboard = () => {
               </div>
 
               <p className="mt-2">
-                Parents Number: <span className="font-semibold">{leave.parentsNumber}</span>
+                Parents Number: <span className="font-semibold"> +91 {leave.parentsNumber}</span>
               </p>
               
               <p className="mt-2">
-                From {new Date(leave.startDate).toLocaleDateString()} to{' '}
-                {new Date(leave.endDate).toLocaleDateString()}
-              </p>
+  Date: {new Date(leave.startDate).toLocaleDateString('en-GB')}
+</p>
+
+              
+              {/* Display messages if any */}
+              {messages[leave._id] && messages[leave._id].length > 0 && (
+                <div className="mt-2 p-2 bg-gray-100 border-l-4 border-gray-500 rounded-md">
+                  <p className="font-medium text-gray-800">Coordinator's Remark:</p>
+                  {messages[leave._id].map((message, index) => (
+                    <p key={index}>{message.coordinatorMessage}</p>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-2 flex flex-wrap gap-2">
                 <span className={`px-2 py-1 rounded-full text-sm font-semibold ${getStatusClass(leave.finalStatus)}`}>
                   Status: {leave.finalStatus}
@@ -118,7 +147,8 @@ const HODDashboard = () => {
                   </span>
                 )}
               </div>
-              <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-500 rounded-md">
+
+              {/* <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-500 rounded-md">
                 <p className="font-medium text-gray-800">
                   HOD Status: 
                   <span className={`ml-2 font-bold ${
@@ -129,7 +159,8 @@ const HODDashboard = () => {
                     {leave.hodApprovalStatus}
                   </span>
                 </p>
-              </div>
+              </div> */}
+
               {leave.hodApprovalStatus === 'pending' ? (
                 <div className="flex space-x-2 mt-4">
                   <button 
@@ -154,10 +185,8 @@ const HODDashboard = () => {
       ) : (
         <p className="text-center mt-4">No leave requests available</p>
       )}
-
     </div>
   );
 };
 
 export default HODDashboard;
-
