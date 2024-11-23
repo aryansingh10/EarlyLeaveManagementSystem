@@ -151,7 +151,7 @@ function GetLeaveStats() {
               {filteredLeaveStats.approvedLeaves.map((leave) => (
                 <tr key={leave._id} className="hover:bg-gray-100">
                   <td className="py-2 px-4 border-b">{leave.studentId.name}</td>
-                  <td className="py-2 px-4 border-b">{leave.studentId?.enrollmentNumber}</td>
+                  <td className="py-2 px-4 border-b">{leave.studentId.enrollmentNumber}</td>
                   <td className="py-2 px-4 border-b">{leave.reason}</td>
                   <td className="py-2 px-4 border-b">{new Date(leave.startDate).toLocaleDateString()}</td>
                   <td className='py-2 px-4 border-b'> {leave.studentId.class} </td>

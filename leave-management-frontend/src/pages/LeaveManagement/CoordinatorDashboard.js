@@ -66,9 +66,9 @@ const CoordinatorDashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      
       toast.success('Message added successfully');
-      setMessages((prevMessages) => ({ ...prevMessages, [leaveId]: '' })); // Clear message input
+      setMessages((prevMessages) => ({ ...prevMessages, [leaveId]: `${message}` })); 
+
     } catch (err) {
       console.error('Error adding message: ', err);
       toast.error('Error adding message');
@@ -94,7 +94,7 @@ const CoordinatorDashboard = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">Coordinator Leave Approvals</h1>
-      
+
       {leaves.length === 0 ? (
         <div className="text-center text-lg">No leave requests found.</div>
       ) : (
@@ -113,19 +113,18 @@ const CoordinatorDashboard = () => {
 
               {/* Display Parents Number with +91 Prefix */}
               <p className="mt-2">
-                Parents Number: <span className="font-semibold">+91 {leave.parentsNumber}</span>
+                Parents Number: <span className="font-semibold">{leave.parentsNumber}</span>
               </p>
-              
+
               <p className="mt-2">
                 Date: {new Date(leave.startDate).toLocaleDateString('en-GB')}
               </p>
 
               <div className="mt-2 flex flex-wrap gap-2">
-                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${
-                  leave.coordinatorApprovalStatus === 'approved' ? 'bg-green-100 text-green-800' :
-                  leave.coordinatorApprovalStatus === 'rejected' ? 'bg-red-100 text-red-800' :
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
+                <span className={`px-2 py-1 rounded-full text-sm font-semibold ${leave.coordinatorApprovalStatus === 'approved' ? 'bg-green-100 text-green-800' :
+                    leave.coordinatorApprovalStatus === 'rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                  }`}>
                   Coordinator Status: {leave.coordinatorApprovalStatus}
                 </span>
                 {leave.isEarlyLeave && (
@@ -139,11 +138,16 @@ const CoordinatorDashboard = () => {
               <div className="mt-4">
                 <input
                   type="text"
-                  placeholder="Enter a Remark regarding this leave"
-                  value={messages[leave._id] || ''}
+                  placeholder={
+                    messages && messages[leave._id]
+                      ? `Remark: ${messages[leave._id]}`
+                      : "Enter a Remark regarding this leave"
+                  }
+                  value={messages && messages[leave._id] ? messages[leave._id] : ""}
                   onChange={(e) => handleMessageChange(leave._id, e.target.value)}
                   className="w-full p-2 border rounded"
                 />
+
                 <button
                   onClick={() => handleAddMessage(leave._id)}
                   className="mt-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition duration-200"
@@ -154,14 +158,14 @@ const CoordinatorDashboard = () => {
 
               {leave.coordinatorApprovalStatus === 'pending' ? (
                 <div className="flex space-x-2 mt-4">
-                  <button 
-                    onClick={() => handleApprove(leave._id)} 
+                  <button
+                    onClick={() => handleApprove(leave._id)}
                     className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-500 transition duration-200"
                   >
                     Approve
                   </button>
-                  <button 
-                    onClick={() => handleReject(leave._id)} 
+                  <button
+                    onClick={() => handleReject(leave._id)}
                     className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition duration-200"
                   >
                     Reject
