@@ -111,7 +111,7 @@ const HODDashboard = () => {
               </div>
 
               <p className="mt-2">
-                Parents Number: <span className="font-semibold"> +91 {leave.parentsNumber}</span>
+                Parents Number: <span className="font-semibold"> {leave.parentsNumber}</span>
               </p>
               
               <p className="mt-2">

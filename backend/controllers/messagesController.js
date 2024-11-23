@@ -8,12 +8,16 @@ exports.addMessage = async (req, res) => {
   const { coordinatorMessage } = req.body;
 
   try {
-    const message = new Message({ leaveId, coordinatorMessage });
-    await message.save();
+    // Find the message by leaveId and update it, or create a new one if it doesn't exist
+    const message = await Message.findOneAndUpdate(
+      { leaveId }, // Find by leaveId
+      { $set: { coordinatorMessage } }, // Update coordinatorMessage
+      { new: true, upsert: true } // Return the updated document and create if not exists
+    );
 
-    res.status(201).json({ message: 'Message added successfully', data: message });
+    res.status(201).json({ message: 'Message added/updated successfully', data: message });
   } catch (error) {
-    console.error('Error adding message:', error);
+    console.error('Error adding/updating message:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -30,3 +34,4 @@ exports.getMessagesByLeaveId = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
