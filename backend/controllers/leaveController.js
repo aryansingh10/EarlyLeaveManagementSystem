@@ -230,9 +230,9 @@ exports.deleteLeave = async (req, res) => {
 // Get leave statistics (rejected, approved, pending)
 exports.getLeaveStats = async (req, res) => {
   try {
-    const rejected = await Leave.find({ finalStatus: 'rejected' }).populate('studentId', 'name enrollmentNumber class year');
-    const approvedLeaves = await Leave.find({ finalStatus: 'approved' }).populate('studentId', 'name enrollmentNumber class year');
-    const pendingLeaves = await Leave.find({ finalStatus: 'pending' }).populate('studentId', 'name enrollmentNumber class year');
+    const rejected = await Leave.find({ finalStatus: 'rejected' }).populate('studentId', 'name enrollmentNumber class year department');
+    const approvedLeaves = await Leave.find({ finalStatus: 'approved' }).populate('studentId', 'name enrollmentNumber class year department');
+    const pendingLeaves = await Leave.find({ finalStatus: 'pending' }).populate('studentId', 'name enrollmentNumber class year department');
     const totalLeaves = rejected.length + approvedLeaves.length + pendingLeaves.length;
 
     res.status(200).json({ totalLeaves, approvedLeaves, pendingLeaves });
