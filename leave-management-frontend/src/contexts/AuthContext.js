@@ -36,19 +36,20 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome back, ${loggedInUser.user.name}!`);
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Email or password is incorrect');
+      toast.error(error);
     }
   };
 
   // Updated signup to include class and section fields for students
-  const signup = async (name, email, password, role, enrollmentNumber = null, userClass = null, year = null) => {
+  const signup = async (name, email, password, role, enrollmentNumber = null, userClass = null, year = null,department) => {
     try {
-      const signedUpUser = await authService.signup(name, email, password, role, enrollmentNumber, userClass, year);
-      setUser(signedUpUser);
+      const signedUpUser = await authService.signup(name, email, password, role, enrollmentNumber, userClass, year,department);
+      // setUser(signedUpUser);
 
-      localStorage.setItem('user', JSON.stringify(signedUpUser));
+      // localStorage.setItem('user', JSON.stringify(signedUpUser));
 
-      navigate(`/${signedUpUser.user.role}-dashboard`);
+      // navigate(`/${signedUpUser.user.role}-dashboard`);
+      navigate("/login");
 
       toast.success(`Welcome, ${signedUpUser.user.name}!`);
     } catch (error) {
