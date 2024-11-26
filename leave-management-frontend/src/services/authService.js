@@ -1,5 +1,4 @@
-import api from '../utils/api';  // Assumes you have API setup for making requests
-
+import api from '../utils/api';  
 // Login function
 const login = async (email, password) => {
   try {

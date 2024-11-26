@@ -263,5 +263,28 @@ exports.fetchApprovedLeaveforaDay=async(req,res)=>{
   })
   .populate('studentId', 'name enrollmentNumber class year');
   res.status(200).json(approvedLeaves);
-
 }
+
+exports.fetchApprovedLeaveforaWeek=async(req,res)=>{
+  const today=new Date();
+  const lastWeek = new Date(today.setDate(today.getDate()-7));
+  const approvedLeaves=await Leave.find({
+    finalStatus: 'approved',
+    startDate: { $gte: lastWeek },
+    endDate: { $lte: new Date() },
+  })
+  .populate('studentId', 'name enrollmentNumber class year');
+  res.status(200).json(approvedLeaves);
+}
+
+exports.CoordinatorApprovedLeaves=async(req,res)=>{
+  try {
+    const leaves = await Leave.find({ coordinatorApprovalStatus: 'approved' })
+      .populate('studentId', 'name enrollmentNumber')
+      .populate('coordinatorId', 'name');
+    res.status(200).json(leaves);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to fetch approved leaves', error: err.message });
+  }
+}
+
