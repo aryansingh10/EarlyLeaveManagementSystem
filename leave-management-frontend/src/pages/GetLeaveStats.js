@@ -145,6 +145,7 @@ function GetLeaveStats() {
                 <th className="py-2 px-4 border-b">Date</th>
                 <th className="py-2 px-4 border-b">Class</th>
                 <th className="py-2 px-4 border-b">Year</th>
+                <th className="py-2 px-4 border-b">Department</th>
               </tr>
             </thead>
             <tbody>
@@ -156,6 +157,7 @@ function GetLeaveStats() {
                   <td className="py-2 px-4 border-b">{new Date(leave.startDate).toLocaleDateString()}</td>
                   <td className='py-2 px-4 border-b'> {leave.studentId.class} </td>
                   <td className='py-2 px-4 border-b'> {leave.studentId.year} </td>
+                  <td className='py-2 px-4 border-b'> {leave.studentId.department} </td>
                 </tr>
               ))}
             </tbody>

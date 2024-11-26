@@ -31,7 +31,6 @@ const UserSchema = new mongoose.Schema({
   },
   class: {
     type: String,
-    enum: ['CS1', 'CS2', 'CS3', 'CS4', 'CS5'],
     required: function () {
       return this.role === 'student';
     },
@@ -50,6 +49,10 @@ const UserSchema = new mongoose.Schema({
     required: function () {
       return this.role === 'student';
     },
+  },
+  approvedStatus: {
+    type: Boolean,
+    default: false
   },
 });
 
