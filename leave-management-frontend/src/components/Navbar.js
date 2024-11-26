@@ -54,6 +54,9 @@ const Navbar = () => {
                   <li>
                     <Link to="/leave-stats" className="text-white hover:text-blue-300 transition duration-200">Leave Stats</Link>
                   </li>
+                  <li>
+                    <Link to="/get-students" className="text-white hover:text-blue-300 transition duration-200">Approve Student</Link>
+                  </li>
                 </>
               )}
               {user.user.role === 'hod' && (
@@ -92,9 +95,9 @@ const Navbar = () => {
               <li>
                 <Link to="/login" className="text-white hover:text-blue-300 transition duration-200">Login</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/signup" className="text-white hover:text-blue-300 transition duration-200">Signup</Link>
-              </li>
+              </li> */}
             </>
           )}
         </ul>
