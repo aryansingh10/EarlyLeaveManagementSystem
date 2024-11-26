@@ -29,10 +29,12 @@ app.use(cookieParser(
 const authRoutes = require('./routes/auth');
 const leaveRoutes = require('./routes/leaveRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const userRoutes=require("./routes/userRoutes")
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leave', leaveRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/user', userRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
