@@ -18,6 +18,8 @@ const CoordinatorProfile = () => {
         
         <p className="text-lg font-semibold">Name: <span className="font-normal">{user.user.name}</span></p>
         <p className="text-lg font-semibold">Email: <span className="font-normal">{user.user.email}</span></p>
+        <p className="text-lg font-semibold">Class: <span className="font-normal">{user.user.class}</span></p>
+        <p className="text-lg font-semibold">Department: <span className="font-normal">{user.user.department}</span></p>
       </div>
     </div>
   );
