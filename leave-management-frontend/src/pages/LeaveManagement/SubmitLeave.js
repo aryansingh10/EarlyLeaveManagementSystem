@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import api from '../../utils/api';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import api from "../../utils/api";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SubmitLeave = () => {
-  const [reason, setReason] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [reason, setReason] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [isEarlyLeave, setIsEarlyLeave] = useState(false);
-  const [parentsNumber, setParentsNumber] = useState('+91 '); // Start with +91 followed by a space
+  const [parentsNumber, setParentsNumber] = useState("+91 "); // Start with +91 followed by a space
   const [coordinators, setCoordinators] = useState([]);
-  const [selectedCoordinator, setSelectedCoordinator] = useState('');
+  const [selectedCoordinator, setSelectedCoordinator] = useState("");
+  const { user } = useAuth();
+  console.log(user.user.department);
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     setStartDate(today);
@@ -21,31 +24,35 @@ const SubmitLeave = () => {
 
   const fetchCoordinators = async () => {
     try {
-      const response = await api.get('/auth/coordinators');
+      const response = await api.get("/auth/coordinators");
       setCoordinators(response.data);
     } catch (error) {
-      toast.error('Failed to load coordinators');
+      toast.error("Failed to load coordinators");
     }
   };
-
+  const token = localStorage.getItem("token");
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.post(
-        '/leave/submit',
-        { reason, startDate, endDate, isEarlyLeave, parentsNumber, coordinatorId: selectedCoordinator },
-      );
-      toast.success('Leave submitted successfully');
+      const response = await api.post("/leave/submit", {
+        reason,
+        startDate,
+        endDate,
+        isEarlyLeave,
+        parentsNumber,
+        coordinatorId: selectedCoordinator,
+        department: user.user.department,
+      });
+      toast.success("Leave submitted successfully");
       // Reset form fields
-      setReason('');
+      setReason("");
       setStartDate(today);
       setEndDate(today);
       setIsEarlyLeave(false);
-      setParentsNumber('+91 '); // Reset to default with space
-      setSelectedCoordinator('');
+      setParentsNumber("+91 "); // Reset to default with space
+      setSelectedCoordinator("");
     } catch (error) {
-      const message = error.response?.data?.message || 'Error submitting leave';
+      const message = error.response?.data?.message || "Error submitting leave";
       toast.error(message);
     }
   };
@@ -53,7 +60,10 @@ const SubmitLeave = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-6">Submit Leave</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto"
+      >
         <div className="mb-4">
           <label className="block text-gray-600 mb-2">Reason for Leave:</label>
           <textarea
@@ -101,7 +111,9 @@ const SubmitLeave = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-600 mb-2">Select Coordinator:</label>
+          <label className="block text-gray-600 mb-2">
+            Select Coordinator:
+          </label>
           <select
             value={selectedCoordinator}
             onChange={(e) => setSelectedCoordinator(e.target.value)}
