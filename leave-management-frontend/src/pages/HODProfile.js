@@ -16,6 +16,7 @@ const HODProfile = () => {
         </div>
         
         <p className="text-lg font-semibold">Name: <span className="font-normal">{user.user.name}</span></p>
+        <p className="text-lg font-semibold">Department: <span className="font-normal">{user.user.department}</span></p>
         <p className="text-lg font-semibold">Email: <span className="font-normal">{user.user.email}</span></p>
       </div>
     </div>
