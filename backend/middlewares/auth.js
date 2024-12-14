@@ -6,7 +6,6 @@ dotenv.config();
 // Middleware to authenticate user based on JWT token in cookies
 exports.auth = async (req, res, next) => {
   const token = req.cookies?.token; // Retrieve token from cookies
-
   if (!token) {
     return res.status(401).json({ message: 'Access Denied. No token provided.' });
   }
