@@ -11,11 +11,14 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Determine the route for LeaveSync based on user's login status
+  const leaveSyncRedirect = user && user.user ? `/${user.user.role}-dashboard` : '/';
+
   return (
     <nav className="bg-blue-600 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="text-white text-xl font-bold">
-          <Link to="/">LeaveSync</Link>
+        <Link to={leaveSyncRedirect}>LeaveSync</Link>
         </div>
 
         {/* Hamburger Icon */}
