@@ -11,6 +11,15 @@ const leaveSchema = new mongoose.Schema({
   
   // Select coordinatorId field added back
   coordinatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Coordinator assigned to this leave request
+
+  department: {
+    type: String,
+    enum: ['CSE', 'IT', 'ECE', 'MECH', 'CIVIL', 'AIML', 'DS', 'IOT', 'CSIT'],
+    required: function () {
+      // Department is required for students, coordinators, and HODs
+      return ['student', 'coordinator', 'hod'].includes(this.role);
+    },
+  },
   
   // Coordinator and HOD approval statuses
   coordinatorApprovalStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },

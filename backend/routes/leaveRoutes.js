@@ -31,7 +31,6 @@ router.get('/coordinator-leaves', auth, roleCheck('coordinator'), getCoordinator
 
 router.get('/hod-leaves', auth, roleCheck('hod'), getHODLeaves);
 
-
 router.get('/leave/:id', auth, getLeaveById);
 
 router.get('/leaves-by-date', auth, getLeavesByDate);
