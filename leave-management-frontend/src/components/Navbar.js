@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCog } from 'react-icons/fa'; // Added FaCog for settings
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -11,17 +12,15 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Determine the route for LeaveSync based on user's login status
   const leaveSyncRedirect = user && user.user ? `/${user.user.role}-dashboard` : '/';
 
   return (
-    <nav className="bg-blue-600 shadow-md">
+    <nav className="bg-blue-700 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div className="text-white text-xl font-bold">
-        <Link to={leaveSyncRedirect}>LeaveSync</Link>
+          <Link to={leaveSyncRedirect}>LeaveSync</Link>
         </div>
 
-        {/* Hamburger Icon */}
         <button
           onClick={toggleMobileMenu}
           className="text-white text-2xl md:hidden focus:outline-none"
@@ -29,63 +28,65 @@ const Navbar = () => {
           {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex space-x-4">
+        <ul className="hidden md:flex space-x-4 items-center">
           {user && user.user ? (
             <>
-              {user.user.role === 'student' && (
-                <>
-                  <li>
-                    <Link to="/student-dashboard" className="text-white hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/student-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                </>
-              )}
-              {user.user.role === 'coordinator' && (
-                <>
-                  <li>
-                    <Link to="/coordinator-dashboard" className="text-white hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/coordinator-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/approved-leaves-today" className="text-white hover:text-blue-300 transition duration-200">Approved Leaves</Link>
-                  </li>
-                  <li>
-                    <Link to="/leave-stats" className="text-white hover:text-blue-300 transition duration-200">Leave Stats</Link>
-                  </li>
-                  <li>
-                    <Link to="/get-students" className="text-white hover:text-blue-300 transition duration-200">Approve Student</Link>
-                  </li>
-                </>
-              )}
-              {user.user.role === 'hod' && (
-                <>
-                  <li>
-                    <Link to="/hod-dashboard" className="text-white hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/hod-profile" className="text-white hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/approved-leaves-today" className="text-white hover:text-blue-300 transition duration-200">Approved Leaves</Link>
-                  </li>
-                  <li>
-                    <Link to="/leave-stats" className="text-white hover:text-blue-300 transition duration-200">Leave Stats</Link>
-                  </li>
-                </>
-              )}
-              <li>
-                <button
-                  onClick={logout}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition duration-200"
-                >
-                  Logout
-                </button>
-              </li>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger className="text-white hover:text-blue-300 focus:outline-none">
+                  <FaBars /> {/* Settings Icon */}
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="bg-white shadow-md rounded-md p-2">
+                  {user.user.role === 'student' && (
+                    <>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/student-dashboard">Dashboard</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/student-profile">Profile</Link>
+                      </DropdownMenu.Item>
+                    </>
+                  )}
+
+                  {user.user.role === 'coordinator' && (
+                    <>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 hover:border-2 rounded">
+                        <Link to="/coordinator-dashboard">Dashboard</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/coordinator-profile">Profile</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/approved-leaves-today">Approved Leaves</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/leave-stats">Leave Stats</Link>
+                      </DropdownMenu.Item>
+                    </>
+                  )}
+
+                  {user.user.role === 'hod' && (
+                    <>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/hod-dashboard">Dashboard</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/hod-profile">Profile</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/approved-leaves-today">Approved Leaves</Link>
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/leave-stats">Leave Stats</Link>
+                      </DropdownMenu.Item>
+                    </>
+                  )}
+                  <DropdownMenu.Item className="px-2 py-1 hover:bg-red-400 rounded">
+                    <button onClick={logout} className="w-full text-white py-2 rounded hover:bg-red-400 bg-red-600 transition duration-200">
+                      Logout
+                    </button>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             </>
           ) : (
             <>
@@ -98,61 +99,15 @@ const Navbar = () => {
               <li>
                 <Link to="/login" className="text-white hover:text-blue-300 transition duration-200">Login</Link>
               </li>
-              {/* <li>
-                <Link to="/signup" className="text-white hover:text-blue-300 transition duration-200">Signup</Link>
-              </li> */}
             </>
           )}
         </ul>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <ul className="md:hidden px-4 py-3 space-y-2 bg-blue-600">
+        <ul className="md:hidden px-4 py-3 space-y-2 bg-blue-700">
           {user && user.user ? (
             <>
-              {user.user.role === 'student' && (
-                <>
-                  <li>
-                    <Link to="/student-dashboard" className="text-white block hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/student-profile" className="text-white block hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                </>
-              )}
-              {user.user.role === 'coordinator' && (
-                <>
-                  <li>
-                    <Link to="/coordinator-dashboard" className="text-white block hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/coordinator-profile" className="text-white block hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/approved-leaves-today" className="text-white block hover:text-blue-300 transition duration-200">Approved Leaves</Link>
-                  </li>
-                  <li>
-                    <Link to="/leave-stats" className="text-white block hover:text-blue-300 transition duration-200">Leave Stats</Link>
-                  </li>
-                </>
-              )}
-              {user.user.role === 'hod' && (
-                <>
-                  <li>
-                    <Link to="/hod-dashboard" className="text-white block hover:text-blue-300 transition duration-200">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/hod-profile" className="text-white block hover:text-blue-300 transition duration-200">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/approved-leaves-today" className="text-white block hover:text-blue-300 transition duration-200">Approved Leaves</Link>
-                  </li>
-                  <li>
-                    <Link to="/leave-stats" className="text-white block hover:text-blue-300 transition duration-200">Leave Stats</Link>
-                  </li>
-                </>
-              )}
               <li>
                 <button
                   onClick={logout}
@@ -172,9 +127,6 @@ const Navbar = () => {
               </li>
               <li>
                 <Link to="/login" className="text-white block hover:text-blue-300 transition duration-200">Login</Link>
-              </li>
-              <li>
-                <Link to="/signup" className="text-white block hover:text-blue-300 transition duration-200">Signup</Link>
               </li>
             </>
           )}
