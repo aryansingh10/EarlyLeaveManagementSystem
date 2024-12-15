@@ -196,12 +196,31 @@ exports.getMe = async (req, res) => {
 // Get All Coordinators Function
 exports.getAllCoordinators = async (req, res) => {
   try {
-    const coordinators = await User.find({ role: "coordinator" }).select(
-      "-password"
-    );
+    const id = req.user.id; // Get the ID of the authenticated user
+    const user = await User.findById(id); // Fetch user details
+
+    if (!user) {
+      return res.status(404).json({ message: "Authenticated user not found" });
+    }
+
+    const { department } = user; // Extract the department of the logged-in user
+
+    if (!department) {
+      return res.status(400).json({ message: "Department not associated with the user" });
+    }
+
+    // Fetch coordinators only in the authenticated user's department
+    const coordinators = await User.find({ role: "coordinator", department })
+      .select("-password"); // Exclude sensitive data like password
+
+    // Check if coordinators exist in the department
+    if (!coordinators.length) {
+      return res.status(404).json({ message: "No coordinators found for your department" });
+    }
+
     res.status(200).json(coordinators);
   } catch (err) {
-    console.error("GetAllCoordinators Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Error in getAllCoordinators:", err.message);
+    res.status(500).json({ message: "Server Error", error: err.message });
   }
 };
