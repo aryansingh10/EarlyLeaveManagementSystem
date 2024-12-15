@@ -9,5 +9,5 @@ router.post('/register', register);
 router.post('/login', login);
 router.get('/me', auth, getMe);
 router.post('/logout', logout);
-router.get('/coordinators', getAllCoordinators);
+router.get('/coordinators',auth, getAllCoordinators);
 module.exports = router;

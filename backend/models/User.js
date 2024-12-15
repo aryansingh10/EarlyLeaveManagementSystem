@@ -35,6 +35,7 @@ const UserSchema = new mongoose.Schema({
       return this.role === 'student';
     },
   },
+
   department: {
     type: String,
     enum: ['CSE', 'IT', 'ECE', 'MECH', 'CIVIL', 'AIML', 'DS', 'IOT', 'CSIT'],
@@ -43,6 +44,7 @@ const UserSchema = new mongoose.Schema({
       return ['student', 'coordinator', 'hod'].includes(this.role);
     },
   },
+  
   year: {
     type: String,
     enum: ['1', '2', '3', '4'],
