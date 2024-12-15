@@ -91,6 +91,7 @@ const ApprovedLeavesToday = () => {
               <p><strong>Date:</strong> {formatDate(leave.startDate)}</p>
               <p><strong>Class:</strong> {leave.studentId.class}</p>
               <p><strong>Year:</strong> {leave.studentId.year}</p>
+              <p><strong>Department:</strong> {leave.studentId.department}</p>
               <hr className="my-4" />
             </li>
           ))}

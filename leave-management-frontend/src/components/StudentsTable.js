@@ -177,6 +177,31 @@ const StudentsTable = () => {
       ) : (
         <p className="text-gray-500">No approved students found.</p>
       )}
+      <br>
+
+      </br>
+      <br>
+
+      </br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br><br>
+
+</br>
+
     </div>
   );
 };

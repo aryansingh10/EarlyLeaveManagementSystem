@@ -49,14 +49,14 @@ exports.register = async (req, res) => {
       }
     }
     if (role === "coordinator") {
-      const existingCoordinator = await User.findOne({
+      const existingCoordinator = await User.find({
         role: "coordinator",
-        department,
-        classSection,
+        department: department,
+        classSection: classSection,
       });
       if (existingCoordinator) {
         return res.status(400).json({
-          message: `Coordinator already exists for the ${department} department and class ${classSection}. Only one coordinator can be registered per department.`,
+          message: `Coordinator already exists for the class ${classSection} in ${department} department. Only one coordinator can be registered per class.`,
         });
       }
     }

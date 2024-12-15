@@ -347,6 +347,6 @@ exports.fetchApprovedLeaveforaDay = async (req, res) => {
   const approvedLeaves = await Leave.find({
     finalStatus: "approved",
     $or: [{ startDate: today }, { endDate: today }],
-  }).populate("studentId", "name enrollmentNumber class year");
+  }).populate("studentId", "name enrollmentNumber class year department");
   res.status(200).json(approvedLeaves);
 };

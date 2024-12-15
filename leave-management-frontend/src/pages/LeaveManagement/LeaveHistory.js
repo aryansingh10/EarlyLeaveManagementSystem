@@ -84,6 +84,11 @@ const LeaveHistory = () => {
             </button>
           </li>
         ))}
+
+        {leaveHistory.length === 0 && (
+          <p className="text-center text-gray-600">No leaves found.</p>
+        )}
+        
       </ul>
     </div>
   );

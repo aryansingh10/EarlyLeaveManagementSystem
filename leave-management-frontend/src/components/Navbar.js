@@ -61,6 +61,10 @@ const Navbar = () => {
                       <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
                         <Link to="/leave-stats">Leave Stats</Link>
                       </DropdownMenu.Item>
+                      <DropdownMenu.Item className="px-2 py-1 hover:bg-blue-100 rounded">
+                        <Link to="/get-students">Verify Students</Link>
+                      </DropdownMenu.Item>
+
                     </>
                   )}
 
